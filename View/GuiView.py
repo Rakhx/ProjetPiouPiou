@@ -1,6 +1,6 @@
 from ProjectPiouPiou.View.AbstractView import AbstractView
 from tkinter import Tk, Canvas, PhotoImage, mainloop
-
+import time
 
 class GuiView(AbstractView):
     # construction d'une fenetre de base
@@ -17,8 +17,6 @@ class GuiView(AbstractView):
     def displayLand(self, representation):
 
         self._canvas.create_image((500 , 500), image=self.img, state="normal")
-
-
         lignes = representation.split('\n')
         actualY = 0
         for ligne in lignes:
@@ -33,18 +31,6 @@ class GuiView(AbstractView):
 
             # on passe une ligne sur les Y
             actualY += self._offset
-
-        # self.cpt = self.cpt + 1
-        # if self.cpt % 2 == 0 :
-        #     #self._canvas.setvar("bg", "#000000")
-        #     self._canvas.configure(bg='blue')
-        #     print("black")
-        #
-        # else :
-        #     #self._canvas.setvar("bg", "#FFFFFF")
-        #     self._canvas.configure(bg='white')
-        #     print("white")
-
 
         self.root.update()
 

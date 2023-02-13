@@ -5,6 +5,6 @@ from ProjectPiouPiou.Models.bo.Unite import Unite
 
 
 class Marines(Unite):
-    def __init__(self, position, mvt, pv, damage, vision, isDestructible = True):
-        Unite.__init__(self, position, mvt, pv, damage, vision, isDestructible)
+    def __init__(self, position, mvt, pv, damage, vision, name, camp):
+        Unite.__init__(self, position, mvt, pv, damage, vision, name, camp)
 

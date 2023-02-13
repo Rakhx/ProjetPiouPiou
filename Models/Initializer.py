@@ -52,12 +52,7 @@ class Initializer:
     # la fonction nous renvoi une liste d'item
     def mockUnites(self) -> List[Item] :
         listItem = []
-        # création d'une unité de chaque type
-        #listItem += [Obstacle((2.0, 1.2))]
 
-        #test des differents types d'unites
-        # listItem += [Marines((3.0, 4), 1, 1, 1, 1)]
-        # listItem += [Artilleur("autres",(6.0, 5), 1, 1, 1, 1)]
 
         return self.getUnites()
 

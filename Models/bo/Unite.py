@@ -9,12 +9,13 @@ from typing import Tuple
 
 
 class Unite(Item, ABC):
-    def __init__(self, position, mvt, pv, damage, vision, isDestructible = True):
-        Item.__init__(self, position, isDestructible)
+    def __init__(self, position, mvt, pv, damage, vision, name, camp, isDestructible = True):
+        Item.__init__(self, position, isDestructible, camp)
         self._mvt = mvt;
         self._pv = pv;
         self._damage = damage;
         self._vision = vision;
+        self._name = name;
 
     # On veut de placer l'unité. On suppose les controles déjà fait précédemment
     def setPosition(self, coordonneesDestination : Tuple[float, float]):
@@ -31,7 +32,7 @@ class Unite(Item, ABC):
             mvty = mvty * -1
 
         newPosi = (self._position[0]+mvtx, self._position[1]+mvty)
-        if(land.positionIsEmpty(newPosi)):
+        if(land.isItemIsAtPos(newPosi)):
 
             self.setPosition(newPosi)
 

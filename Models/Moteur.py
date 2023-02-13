@@ -11,7 +11,6 @@ from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
 from ProjectPiouPiou.Models.bo.Unite import Unite
 from ProjectPiouPiou.Presenter.AbstractPresenter import AbstractPresenter
 
-
 class Moteur():
 
     def __init__(self, presenter : AbstractPresenter):
@@ -25,10 +24,8 @@ class Moteur():
 
         try:
             while True:
-                print("boucle")
                 self.boucle()
                 self._presenter.parseLand(self._land)
-                time.sleep(1)
         except KeyboardInterrupt:
             pass
 
@@ -40,8 +37,3 @@ class Moteur():
             # pour chaque
             if(isinstance(item, Unite)):
                 item.seDeplacer(self._land)
-
-
-
-
-
