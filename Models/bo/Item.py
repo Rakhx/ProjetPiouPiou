@@ -6,10 +6,11 @@ from abc import ABC, abstractmethod
 
 
 class Item(ABC):
-    def __init__(self, position : Tuple[float, float], isDestructible : bool, camp="neutre"):
+    def __init__(self, name, equipe, position : Tuple[float, float], isDestructible : bool):
         self._position = position
         self._isDestructible = isDestructible
-        self._camp = camp
+        self._camp = equipe
+        self._name = name
 
     def getPosition(self) -> Tuple[float, float]:
         return self._position
