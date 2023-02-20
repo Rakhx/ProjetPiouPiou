@@ -12,18 +12,14 @@ class Land():
         # initialise le plateau a vide
         self._plateau = [["-" for x in range(int(dimension[0]))] for y in range(int(dimension[1]))]
 
-
-    def setDimension(self, dimension : Tuple[float, float]):
-        self._dimension = dimension
-
     def getDimension(self) -> Tuple[float, float]:
         return self._dimension
 
     def addItem(self, item : Item ):
-        pass
+        self._items.append(item)
 
-    def getItem(self) -> List[Item]:
-        return self._items.copy()
+    def removeItem(self, item : Item):
+        pass
 
     def isItemIsAtPos(self, position : Tuple[float, float]) -> bool:
         for item in self._items :
@@ -32,11 +28,10 @@ class Land():
 
         return True
 
-    # regarde le plateau et vérifie qu'il est disponible ou non
-    def isPositionEmpty(self, position):
-        if (self._plateau[position[0]][position[1]] == "-"):
-            return True;
-        return False;
+
+    # Une unité regarde autour d'elle
+    def lookAround(self, position):
+        pass
 
     # inverse le contenu du plateau pour pos1 et pos2
     def deplacerUnite(self, position1, position2):

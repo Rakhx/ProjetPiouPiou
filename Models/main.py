@@ -11,13 +11,16 @@ presenter = PresenterConsole(viewIHM)
 #model = Moteur(presenter)
 #model.go()
 
-
-
-#newobject = dynamic_class()
-try:
-    dynamic_class = globals()["Marines"]
-    stats = getattr(cg, "Marnes")
-    unit = dynamic_class("Marines", "self._name", (1,1), stats[0], stats[1], stats[2], stats[3])
-except BaseException as e:
-    print("marche pas ")
+dic = {}
+dic["un"] = "deux"
+print(dic["un"])
+par = "Deux"
+try :
+    res = dic[par]
+    print(res)
+except KeyError :
+    print("clef existe pas")
+    print("[MoteurFlask.regardeAutour({}) Clef n'existe pas".format( par))
+    toto = "[MoteurFlask.regardeAutour({}) Clef n'existe pas".format(par)
+    print(toto)
 

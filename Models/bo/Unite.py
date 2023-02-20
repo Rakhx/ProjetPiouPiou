@@ -15,6 +15,8 @@ class Unite(Item, ABC):
         self._pv = pv;
         self._damage = damage;
         self._vision = vision;
+        self._shooted = False
+        self._moved = False
 
     # On veut de placer l'unité. On suppose les controles déjà fait précédemment
     def setPosition(self, coordonneesDestination : Tuple[float, float]):
@@ -35,8 +37,15 @@ class Unite(Item, ABC):
 
             self.setPosition(newPosi)
 
+    # Fonction qui vérifie la possibilité pour une unité d'atteindre une position
+    # Renvoi : OK si déplacement possible
+    # NO_PRIS si la case est déja prise
+    # NO_MVT si l'unité n'a pas assez de mouvement pour atteindre l'endroit
+    def canReach(self, pos):
+        pass
 
-
-
+    def resetTurn(self):
+        self._shooted = False;
+        self._moved = False;
 
 

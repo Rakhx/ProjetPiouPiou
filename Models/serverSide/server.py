@@ -49,6 +49,15 @@ def profile(username):
 #   Boucle en cours de  game
 # --------------------------------------
 def deplacementUnite(name, position):
+    return moteur.deplacementUnite(name, position)
+
+
+def tirer(name, position):
+    pass
+
+
+# regarde autour
+def regarderAutour(name):
     pass
 
 # --------------------------------------
@@ -58,6 +67,7 @@ def deplacementUnite(name, position):
 @app.route('/askPrio')
 def getPriority():
     lock.acquire()
+    # TODO return "etat du board"
     return str(True)
 @app.route('/givePrio')
 def releasePriority():
