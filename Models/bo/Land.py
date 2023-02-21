@@ -25,11 +25,10 @@ class Land():
         self._items.remove(item)
         self._plateau.remove(item)
 
-    def isItemIsAtPos(self, position : Tuple[float, float]) -> bool:
-        for item in self._items :
-            if item.isAtPosition(position) :
-                return False
-
+    def getItemOrTrueAtPosition(self, position : Tuple[float, float]):
+        if position in self._plateau:
+            return self._plateau[position]
+    
         return True
 
 
