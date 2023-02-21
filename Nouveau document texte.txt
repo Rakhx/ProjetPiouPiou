@@ -1,0 +1,6 @@
+Deplacement :
+depuis le centre de la case ou se trouve l'unité, réalise un cercle de rayon {deplacement} et on regarde si le centre des cases
+se trouve dasn ce cercle. Si oui la case est atteignable
+
+pour tirer sur une unité qui se trouve dasn une case, il faut pouvoir atteindre le centre de la case avec
+la portée de tire
