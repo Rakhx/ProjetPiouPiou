@@ -4,3 +4,6 @@ se trouve dasn ce cercle. Si oui la case est atteignable
 
 pour tirer sur une unité qui se trouve dasn une case, il faut pouvoir atteindre le centre de la case avec
 la portée de tire
+
+Les obstacles ne cachent pas les lignes de vue
+mais absorbent les tires des marines
