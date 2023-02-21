@@ -84,9 +84,12 @@ class MoteurFlask():
 
 
 
-    # TODO
+    # Retour
+    
     def deplacementUnite(self, name, position):
         # Verification que la case est disponible
+        if !self._land.getItemOrTrueAtPosition(position):
+            return "NO_CASE"
 
         # Verification que l'unité peut atteindre la case
 
