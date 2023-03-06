@@ -13,7 +13,6 @@ lock = Lock()
 def convertToString(value):
     return [tuple(str(x) for x in value)]
 
-
 # --------------------------------------
 #   Initialisation de début de game
 # --------------------------------------
@@ -33,37 +32,35 @@ def getTailleTerrain():
 def getAvailableUnit():
     return moteur.getStartUnite()
 
-
 @app.route("/init/register", methods=['GET'])
 def registerUnit():
     test = request.args.to_dict()
     return moteur.registerUnite(test["team"],test["type"],test["name"],test["posX"], test["posY"])
 
-
 @app.route('/user/<username>')
 def profile(username):
     return f'{username}\'s profile'
 
-
 # --------------------------------------
 #   Boucle en cours de  game
 # --------------------------------------
-def deplacementUnite(name, position):
-    return moteur.deplacementUnite(name, position)
+@app.route('/loop/move', methods=['GET'])
+def deplacementUnite(teamName, unitName, position):
+    param =  request.args.to_dict()
+    return moteur.deplacementUnite(param["team"],param["unitName"], (param["posX"], param["posY"]))
 
-
-def tirer(name, position):
+def tirer(teamName, unitName, position):
     pass
-
 
 # regarde autour
-def regarderAutour(name):
-    pass
+@app.route('/loop/lookAround', methods=['GET'])
+def regarderAutour():
+    param =  request.args.to_dict()
+    return [tuple(str(x) for x in moteur.regardeAutour(param["team"],param["unitName"]))]
 
 # --------------------------------------
 # Mutex stuff
 # --------------------------------------
-
 @app.route('/askPrio')
 def getPriority():
     lock.acquire()

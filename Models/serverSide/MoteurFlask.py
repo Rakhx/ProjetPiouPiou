@@ -13,14 +13,14 @@ class MoteurFlask():
         presenter = PresenterConsole(view)
 
         self._tailleTerrain = cg.tailleTerrainTuple
-        self._units =[]
+        self._unitsTxt =[]
         # Marines
         m= cg.Marines
-        self._units.append("4:"+str(m[0])+","+str(m[1])+","+str(m[2])+","+str(m[3])+",Marines")
+        self._unitsTxt.append("4:" + str(m[0]) + "," + str(m[1]) + "," + str(m[2]) + "," + str(m[3]) + ",Marines")
         m = cg.Artilleur
-        self._units.append("4:"+str(m[0])+","+str(m[1])+","+str(m[2])+","+str(m[3])+",Artilleur")
+        self._unitsTxt.append("4:" + str(m[0]) + "," + str(m[1]) + "," + str(m[2]) + "," + str(m[3]) + ",Artilleur")
         m = cg.Eclaireur
-        self._units.append("4:"+str(m[0])+","+str(m[1])+","+str(m[2])+","+str(m[3])+",Eclaireur")
+        self._unitsTxt.append("4:" + str(m[0]) + "," + str(m[1]) + "," + str(m[2]) + "," + str(m[3]) + ",Eclaireur")
 
        # self._units = ["4:2,5,4,2,Marines","4:1,2,3,3,Artilleur","2:4,1,0,5,Eclaireur"]
 
@@ -30,13 +30,11 @@ class MoteurFlask():
                                       (1, self._tailleTerrain[1] - 1), (self._tailleTerrain[1] - 1, 1)]
         self._currentPosition = 0
 
-
     # ---------------------
     # Fonction interne a la classe
     # ---------------------
     def __generateFlag(self):
         pass
-
 
     # -------------------------------------------------------------------
     # ------------------ CONCERNANT L'INITIALISATION --------------------
@@ -57,12 +55,11 @@ class MoteurFlask():
 
     # Renvoi les unités disponibles pour la partie
     def getStartUnite(self):
-        return self._units
+        return self._unitsTxt
 
     # Enregistre l'unité selon un certain type, un certain nom, à un position
     def registerUnite(self, team, unitType, unitName, posX, posY):
         return self._equipe[team].registerUnit(unitType,unitName,posX, posY)
-
 
     # -------------------------------------------------------------------
     # ----------------- CONCERNANT LE FONCTIONNEMENT --------------------
@@ -71,34 +68,44 @@ class MoteurFlask():
 
     # TODO
     # Une unité regarde autour d'elle
-    def regardeAutour(self, name):
+    def regardeAutour(self, teamName, unitName):
         try :
-            unite = self._units[name]
+            team = self._equipe[teamName]
+            unite = team.getUnitByName(unitName)
         except :
             if cg.debug.debug:
-                print("[MoteurFlask.regardeAutour({}) Clef n'existe pas".format(name))
-            return "[MoteurFlask.regardeAutour({}) Clef n'existe pas".format(name)
+                print("[MoteurFlask.regardeAutour({}) Clef n'existe pas".format(unitName))
+            return "[MoteurFlask.regardeAutour({}) Clef n'existe pas".format(unitName)
 
-        return self._land.lookAround(unite.getPosition())
-
-
-
+        print("jj",self._land.lookAround(unite.getPosition(), unite.getRange()))
+        return self._land.lookAround(unite.getPosition(), unite.getRange())
 
     # Retour
-    
-    def deplacementUnite(self, name, position):
-        # Verification que la case est disponible
-        if !self._land.getItemOrTrueAtPosition(position):
-            return "NO_CASE"
+    # NO_CASE : case déjà prise
+    # NO_REACH : l'unité n'a pas la portée
+    # NO_PASS : Pas de chemin disponible
+    def deplacementUnite(self, teamName, unitName, position):
 
-        # Verification que l'unité peut atteindre la case
+        try :
+
+            team = self._equipe[teamName]
+            unite = team.getUnitByName(unitName)
+            # Verification que l'unité peut atteindre la case
+            posUnit = self._unitsTxt[unitName].getPosition()
+
+
+            # Verification que la case est disponible
+            if not self._land.getItemOrTrueAtPosition(position):
+                return "NO_CASE"
+        except :
+            print("[MoteurFlask.deplacementUnite({}) no such unit".format(unitName))
+            return "[MoteurFlask.deplacementUnite({}) no such unit".format(unitName)
+
 
         pass
-
 
     # TODO
     # Tire sur la case selectionnée, dommage fait si cible
     def shoot(self, name, position):
         pass
-
 

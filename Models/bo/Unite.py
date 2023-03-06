@@ -22,6 +22,12 @@ class Unite(Item, ABC):
     def setPosition(self, coordonneesDestination : Tuple[float, float]):
         self._position = coordonneesDestination
 
+    def getPosition(self):
+        return self._position
+
+    def getRange(self):
+        return self._vision
+
     #chaque unité va avoir une maniere différente de se déplacer
     def seDeplacer(self, land : Land):
         mvtx = random.uniform(0, self._mvt)

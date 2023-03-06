@@ -4,7 +4,6 @@ import typing
 from typing import Tuple
 from abc import ABC, abstractmethod
 
-
 class Item(ABC):
     def __init__(self, name, equipe, position : Tuple[float, float], isDestructible : bool):
         self._position = position
