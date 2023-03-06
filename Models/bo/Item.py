@@ -1,6 +1,6 @@
 # Classe de base qui sera commnune à toutes les éléments présents sur la map
 import math
-import typing
+
 from typing import Tuple
 from abc import ABC, abstractmethod
 
@@ -14,6 +14,9 @@ class Item(ABC):
     def getPosition(self) -> Tuple[float, float]:
         return self._position
 
+    def setPosition(self, position):
+        self._position = position
+
     # Vérifie si l'item se trouve "autour" de la position en parametre
     def isAtPosition(self, position : Tuple[float, float]) -> bool:
         if (abs(self._position[0] - position[0]) <= 0.5) and (abs(self._position[1] - position[1]) <= 0.5) :
@@ -23,5 +26,17 @@ class Item(ABC):
     # obtenir la distance entre l'item courant et une position cible
     def getDistance(self, positionCible : Tuple[float, float]) -> float:
         return math.sqrt(math.pow(self._position[0]-positionCible[0],2) +
-                         math.pow(self._position[1]-positionCible[1],2))
+               +          math.pow(self._position[1]-positionCible[1],2))
 
+
+    # Renvoi lettre pour le type de l'unité, ainsi que les pv restant. Si pv infini, -1
+    def getShortRepresentation(self):
+        return ( self.getShortName(), self.getPV() )
+
+    @abstractmethod
+    def getShortName(self) -> str:
+        pass
+
+    @abstractmethod
+    def getPV(self) -> int:
+        pass

@@ -5,3 +5,9 @@ from typing import Tuple
 class Obstacle(Item):
     def __init__(self, position : Tuple[float, float], isDestructible : bool = False):
         Item.__init__(self, position, isDestructible)
+
+    def getShortName(self) -> str:
+        return 'O'
+
+    def getPV(self) -> int:
+        return -1

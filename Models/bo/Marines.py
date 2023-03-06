@@ -8,3 +8,6 @@ class Marines(Unite):
     def __init__(self, name, equipe, position, mvt, pv, damage, vision):
         Unite.__init__(self, name, equipe, position, mvt, pv, damage, vision)
 
+    def getShortName(self) -> str:
+        return 'M'
+

@@ -45,12 +45,14 @@ def profile(username):
 #   Boucle en cours de  game
 # --------------------------------------
 @app.route('/loop/move', methods=['GET'])
-def deplacementUnite(teamName, unitName, position):
+def deplacementUnite():
     param =  request.args.to_dict()
-    return moteur.deplacementUnite(param["team"],param["unitName"], (param["posX"], param["posY"]))
+    return moteur.deplacementUnite(param["team"],param["unitName"], (int(param["posX"]), int(param["posY"])))
 
-def tirer(teamName, unitName, position):
-    pass
+@app.route('/loop/shoot', methods=['GET'])
+def tirer():
+    param = request.args.to_dict()
+    return moteur.shoot(param["team"], param["unitName"], (int(param["posX"]), int(param["posY"])))
 
 # regarde autour
 @app.route('/loop/lookAround', methods=['GET'])

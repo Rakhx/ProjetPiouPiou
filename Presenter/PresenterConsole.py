@@ -21,7 +21,7 @@ class PresenterConsole(AbstractPresenter):
         for x in range(int(dimension[0])):
             for y in range(int(dimension[1])):
 
-                for item in land.getItem():
+                for item in land.getItems():
                     if(item.isAtPosition((x,y))):
                         terrainAscii += self.getAsciiRepresentation(item)
                         posGetItem = True
@@ -33,7 +33,6 @@ class PresenterConsole(AbstractPresenter):
             terrainAscii += "\n"
 
         self._view.displayLand(terrainAscii)
-
 
     def getAsciiRepresentation(self, item : Item) -> str:
 

@@ -54,4 +54,6 @@ class Unite(Item, ABC):
         self._shooted = False;
         self._moved = False;
 
+    def getPV(self) -> int:
+        return self._pv
 
