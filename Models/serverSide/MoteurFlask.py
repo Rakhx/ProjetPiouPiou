@@ -34,7 +34,13 @@ class MoteurFlask():
     # ---------------------
     # Fonction interne a la classe
     # ---------------------
+
+   # TODO
     def __generateFlag(self):
+        pos = ()
+
+        self._land.clearObstacleAroundPosition(pos)
+
         pass
 
     # -------------------------------------------------------------------
@@ -46,6 +52,7 @@ class MoteurFlask():
     # Prendre le nom des équipes, renvoi la position de l'équipe
     def registerTeam(self, teamName):
         team = Team(teamName, self._positionPossibleBase[self._currentPosition], self._land)
+        self._land.clearObstacleAroundPosition(self._positionPossibleBase[self._currentPosition])
         self._currentPosition += 1
         self._equipe[teamName] = team
         return team.basePosition
@@ -66,8 +73,15 @@ class MoteurFlask():
     # ----------------- CONCERNANT LE FONCTIONNEMENT --------------------
     # -------------------------------------------------------------------
 
+    # Fait un résumé des unités disponibles sur la map pour une équipe, pv restant et position. Le
+    # retour est sous la forme key: unite v : (position, pv), position étant (x,y)
+    def sumupSituation(self, teamName):
+        resultat = self._land.getResume(teamName)
+        return resultat
 
-    # TODO
+    def displayLand(self):
+        self._presenter.parseLand(self._land)
+
     # Une unité regarde autour d'elle
     def regardeAutour(self, teamName, unitName):
         try :
@@ -146,25 +160,20 @@ class MoteurFlask():
                 return "NO_REACH"
 
             # On vérifie si un obstacle ou une unite ennemi se trouve sur le chemin
+            # TODO
 
-            if self._land.getItemOrFalseAtPosition(position):
-                return "NO_CASE"
+            # on récupère l'item positionné à l'emplacement, s'il existe
+            if not position in self._land._plateau :
+                return "KO_NOTOUCH"
 
-            # on regarde toutes les cases qui pourraient faire l'affaire autour de posUnit
+            cible = self._land._plateau.get(position)
+            degat = unite.getDegat()
+            pvRestant = cible.takeShoot(degat)
 
-            # On vérifie récursivement quelles sont les cases accessibles
-            posNearFine = []
-            self._land.exploRecu(posNearFine, casesMaybe,posUnit, unite.getRange())
+            if( cg.debug):
+                print("unite ", unite.getName(), " a tiré sur ", cible.getName(), "il lui reste ",
+                      pvRestant)
 
-            # on enleve de ces cases celles qui contiennent des unités alliées ou ennemies
-            posOk = self._land.cleanCase(posNearFine)
-
-            # On renvoie un message d'erreur adaptée
-            if(position not in posNearFine):
-                return "NO_REACH"
-
-            if(position not in posOk):
-                return "NO_PASS"
 
         except KeyError:
             print("[MoteurFlask.deplacementUnite({})] no such unit".format(unitName))
@@ -179,5 +188,3 @@ class MoteurFlask():
 
         return "OK"
 
-    def displayLand(self):
-        self._presenter.parseLand(self._land)

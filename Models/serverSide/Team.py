@@ -8,7 +8,6 @@ class Team():
     def __init__(self, name, basePosition, land):
         self._name = name
         self._land = land
-
         # dic [nom, classe]
         self._units = {}
         self.basePosition = basePosition
@@ -45,7 +44,7 @@ class Team():
 
         self._units[name]= unit
         self._land.addItem(unit)
-        return "FINE"
+        return "OK"
 
     def getUnitByName(self, unitName):
        # try :

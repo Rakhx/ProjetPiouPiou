@@ -56,4 +56,9 @@ class Unite(Item, ABC):
 
     def getPV(self) -> int:
         return self._pv
+    def getDegat(self) -> int:
+        return self._damage
 
+    def takeShoot(self, degat):
+        self._pv = self._pv - degat
+        return self._pv

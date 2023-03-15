@@ -1,4 +1,6 @@
 import json
+import time
+
 import requests
 import ProjectPiouPiou.Models.bo.config as cg
 
@@ -20,6 +22,11 @@ class Client():
         received = json.loads(r.text)
         self._unitDispos = tuple(i for i in received)
 
+    # --------------------------------------
+    #   Initialisation de début de game
+    # --------------------------------------
+
+
     # Enregistre une unité sur le serveur. Le serveur renvoi un message
     # OK = unité positionnée
     # ERR_EXIST = unité selectionnée n'existe pas ( faute de frappe? )
@@ -31,6 +38,28 @@ class Client():
                          "&name=" + unitName + self.posString(pos))
         return r.text
 
+
+    # --------------------------------------
+    #   Boucle en cours de  game
+    # --------------------------------------
+    def askPriority(self):
+        r = requests.get("http://127.0.0.1:5000/loop/askPrio?team="+self._name)
+        received = json.loads(r.text)
+        test = tuple(i for i in received)
+        return test
+
+    def releasePriority(self):
+        r = requests.get("http://127.0.0.1:5000/loop/releasePrio")
+        return r.text
+
+    # fonction a appeler dans le while
+    def newTurn(self):
+        self.releasePriority()
+        time.sleep(5)
+        boardState = self.askPriority()
+        return boardState
+
+
     def regarderAutour(self, unitName):
         r = requests.get("http://127.0.0.1:5000/loop/lookAround?team="+self._name + "&unitName=" + unitName)
         received = json.loads(r.text)
@@ -40,18 +69,16 @@ class Client():
         r = requests.get("http://127.0.0.1:5000/loop/move?team="+self._name + "&unitName=" + unitName + self.posString(pos))
         return r.text
 
-       # received = json.loads(r.text)
-        #return tuple(i for i in received)
-
     def tirer(self, unitName, pos):
         pass
 
+    # --------------------------------------
+    #   Autres
+    # --------------------------------------
     def posString(self, pos):
         return "&posX=" + str(pos[0])+ "&posY=" + str(pos[1])
 
-clicli = Client("TeamA")
-print(clicli.registerUnit("Marines","Ultra", (1,1)))
-print(clicli.registerUnit("Artilleur","piou", (0,0)))
-print(clicli.regarderAutour("Ultra"))
-print(clicli.deplacer("Ultra", (1,0)))
+
+#print(clientA.regarderAutour("Ultra"))
+#print(clientA.deplacer("Ultra", (1,0)))
 

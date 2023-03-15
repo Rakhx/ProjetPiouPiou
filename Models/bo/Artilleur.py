@@ -8,6 +8,6 @@ class Artilleur(Unite):
     def __init__(self, *args ):
         super().__init__(*args)
 
-    def getShortName(self) -> str:
+    def getShortClasse(self) -> str:
         return 'A'
 

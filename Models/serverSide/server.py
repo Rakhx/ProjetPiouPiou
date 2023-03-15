@@ -1,6 +1,7 @@
 from threading import Lock
 from flask import Flask, request
 from ProjectPiouPiou.Models.serverSide.MoteurFlask import MoteurFlask
+import ProjectPiouPiou.Models.bo.config as cg
 
 
 # --------------------------------------
@@ -9,6 +10,7 @@ from ProjectPiouPiou.Models.serverSide.MoteurFlask import MoteurFlask
 app = Flask(__name__)
 moteur = MoteurFlask()
 lock = Lock()
+teamWithPrio = ""
 
 def convertToString(value):
     return [tuple(str(x) for x in value)]
@@ -35,7 +37,11 @@ def getAvailableUnit():
 @app.route("/init/register", methods=['GET'])
 def registerUnit():
     test = request.args.to_dict()
-    return moteur.registerUnite(test["team"],test["type"],test["name"],test["posX"], test["posY"])
+    message = moteur.registerUnite(test["team"],test["type"],test["name"],test["posX"], test["posY"])
+    if cg.debug :
+        print("Register unit ", test["name"], "de type: " , test["type"], " pour team", test["team"],
+                " position ",test["posX"],"x",test["posY"] , ":" ,message)
+    return message
 
 @app.route('/user/<username>')
 def profile(username):
@@ -44,6 +50,13 @@ def profile(username):
 # --------------------------------------
 #   Boucle en cours de  game
 # --------------------------------------
+
+# regarde autour
+@app.route('/loop/lookAround', methods=['GET'])
+def regarderAutour():
+    param =  request.args.to_dict()
+    return [tuple(str(x) for x in moteur.regardeAutour(param["team"],param["unitName"]))]
+
 @app.route('/loop/move', methods=['GET'])
 def deplacementUnite():
     param =  request.args.to_dict()
@@ -54,24 +67,25 @@ def tirer():
     param = request.args.to_dict()
     return moteur.shoot(param["team"], param["unitName"], (int(param["posX"]), int(param["posY"])))
 
-# regarde autour
-@app.route('/loop/lookAround', methods=['GET'])
-def regarderAutour():
-    param =  request.args.to_dict()
-    return [tuple(str(x) for x in moteur.regardeAutour(param["team"],param["unitName"]))]
-
 # --------------------------------------
 # Mutex stuff
 # --------------------------------------
-@app.route('/askPrio')
+@app.route('/loop/askPrio', methods=['GET'])
 def getPriority():
+    param = request.args.to_dict()
     lock.acquire()
-    # TODO return "etat du board"
-    return str(True)
-@app.route('/givePrio')
+    teamWithPrio = param["team"]
+    if cg.debug :
+        print("equipe " + param["team"] + " prend la priorite")
+
+    return moteur.sumupSituation(param["team"])
+
+@app.route('/loop/releasePrio')
 def releasePriority():
     try :
         lock.release()
+        if cg.debug:
+            print("equipe ", teamWithPrio," release la priorite")
         return str(True)
     except RuntimeError :
         return "Release quelque chose de déjà release"

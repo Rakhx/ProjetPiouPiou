@@ -1,11 +1,10 @@
 # Classe qui correspond au terrain sur lequel se déroule la partie
 import math
+import random
 from typing import Tuple
 from typing import List
-
 from ProjectPiouPiou.Models.bo.Item import Item
 from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
-
 
 class Land():
     def __init__(self, dimension : Tuple[float, float] = (), items : List[Item] = [] ):
@@ -17,6 +16,8 @@ class Land():
         self._plateau = {}
         for itemz in items:
             self._plateau[itemz.getPosition()] = itemz
+
+        # TODO générer les obstacles
 
     def getDimension(self) -> Tuple[float, float]:
         return self._dimension
@@ -31,6 +32,15 @@ class Land():
 
     def getItems(self):
         return self._items
+
+    def getResume(self, teamName):
+        resume = []
+        for pos in self._plateau:
+            item = self._plateau[pos]
+            if(item.getTeamName() == teamName):
+                resume.append( (pos,item.getName(), item.getPosition()[0], item.getPosition()[1], item.getPV()))
+        print(resume)
+        return resume
 
     def moveItem(self, item, position):
         self._plateau[position] = item
@@ -119,3 +129,28 @@ class Land():
             if not pos in self._plateau:
                 caseClean.append(pos)
         return caseClean
+
+    # genere les obstacles sur la map, aléatoirement
+    def generateObstacle(self, pourcentage):
+        maxX = self._dimension[0]
+        maxY = self._dimension[1]
+        nbCase = maxX * maxY
+        nbObstacle = int(nbCase * pourcentage)
+        for i in range(nbObstacle) :
+            x = random.uniform(0, maxX)
+            y = random.uniform(0, maxY)
+            # si la case est pas déjà prise
+            if not (x,y) in self._plateau :
+                obs = Obstacle( (x,y))
+                self._plateau[(x,y)] = obs
+                self._items.append(obs)
+
+
+    # Etabli un périmètre autour d'une case pour clean. ( drapeau et départ de team )
+    def clearObstacleAroundPosition(self, position):
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                pos = (position[0]+x, position[1]+y)
+                if pos in self._plateau :
+                    itemToRmv = self._plateau.pop(pos)
+                    self._items.remove(itemToRmv)
