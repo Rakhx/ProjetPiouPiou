@@ -23,11 +23,11 @@ posDep = (2,2)
 compteur = 0
 while compteur < 15:
     etatBoard = clientA.newTurn()
-    #print(clientA.regarderAutour("Ultra"))
+    print(clientA.regarderAutour("Ultra"))
     compteur = compteur + 1
-    retour = clientA.deplacer("piou", moveToward(posDep,(10,10)))
-    if retour :
-        posDep = moveToward(posDep,(10,10))
+   # retour = clientA.deplacer("piou", moveToward(posDep,(10,10)))
+    #if retour :
+     #   posDep = moveToward(posDep,(10,10))
 
 clientA.releasePriority()
 

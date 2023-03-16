@@ -6,10 +6,24 @@ import ProjectPiouPiou.Models.bo.config as cg
 import tkinter as tk
 from tkinter import *
 
-import threading
+from threading import Thread
 
 
 
+def display_land(var):
+    ROOT = Tk()
+    LABEL = Label(ROOT, text="Hello, world!")
+    LABEL.pack()
+
+    while True:
+        time.sleep(2)
+        with data_lock:
+            label = Label(ROOT, text=var[0])
+        label.pack()
+        ROOT.update()
+
+
+data_lock = Lock()
 
 # --------------------------------------
 #   Element autre de la classe
@@ -18,8 +32,22 @@ app = Flask(__name__)
 moteur = MoteurFlask()
 lock = Lock()
 teamWithPrio = ""
+tempValue = ["hihi"]
+T = Thread(target=display_land, args=(tempValue,))
+print("hum?")
+T.start()
 
 
+def modifyValue():
+    with data_lock:
+        global tempValue
+        tempValue[0] = tempValue[0] + "hi"
+
+def seeValue():
+    with data_lock:
+
+
+        print(tempValue)
 
 def convertToString(value):
     return [tuple(str(x) for x in value)]
@@ -50,6 +78,7 @@ def registerUnit():
     if cg.debug :
         print("Register unit ", test["name"], "de type: " , test["type"], " pour team", test["team"],
                 " position ",test["posX"],"x",test["posY"] , ":" ,message)
+
     return message
 
 @app.route('/user/<username>')
@@ -64,7 +93,10 @@ def profile(username):
 @app.route('/loop/lookAround', methods=['GET'])
 def regarderAutour():
     param =  request.args.to_dict()
+    modifyValue()
+    seeValue()
     return [tuple(str(x) for x in moteur.regardeAutour(param["team"],param["unitName"]))]
+
 
 @app.route('/loop/move', methods=['GET'])
 def deplacementUnite():
