@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 from ProjectPiouPiou.Models.bo.Artilleur import Artilleur
-from ProjectPiouPiou.Models.bo.Cible import Cible
+from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Item import Item
 from ProjectPiouPiou.Models.bo.Marines import Marines
 from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
@@ -86,7 +86,7 @@ class Initializer:
 
         # cible
         pos = self.cible.split("x")
-        listItem += [Cible(( int(pos[0]), int(pos[1])), 0, 1, 0, 0 )]
+        listItem += [Flag((int(pos[0]), int(pos[1])), 0, 1, 0, 0)]
 
         return listItem
 

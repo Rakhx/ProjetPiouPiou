@@ -1,3 +1,4 @@
+from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Land import Land
 from ProjectPiouPiou.Models.serverSide.Team import Team
 from ProjectPiouPiou.Presenter.PresenterConsole import PresenterConsole
@@ -5,43 +6,48 @@ from ProjectPiouPiou.View.ConsoleView import ConsoleView
 import ProjectPiouPiou.Models.bo.config as cg
 import traceback
 
+from ProjectPiouPiou.View.GuiView import GuiView
 
-#
+
 class MoteurFlask():
 
     def __init__(self):
         self._view = ConsoleView()
+        #self._view = GuiView()
         self._presenter = PresenterConsole(self._view)
 
         self._tailleTerrain = cg.tailleTerrainTuple
         self._unitsTypeAvailable =[]
-        # Marines
+
         m= cg.Marines
         self._unitsTypeAvailable.append("4:" + str(m[0]) + "," + str(m[1]) + "," + str(m[2]) + "," + str(m[3]) + ",Marines")
         m = cg.Artilleur
         self._unitsTypeAvailable.append("4:" + str(m[0]) + "," + str(m[1]) + "," + str(m[2]) + "," + str(m[3]) + ",Artilleur")
         m = cg.Eclaireur
         self._unitsTypeAvailable.append("2:" + str(m[0]) + "," + str(m[1]) + "," + str(m[2]) + "," + str(m[3]) + ",Eclaireur")
-
-       # self._units = ["4:2,5,4,2,Marines","4:1,2,3,3,Artilleur","2:4,1,0,5,Eclaireur"]
+        # self._units = ["4:2,5,4,2,Marines","4:1,2,3,3,Artilleur","2:4,1,0,5,Eclaireur"]
 
         self._land = Land(self._tailleTerrain)
         self._equipe = {}
+        # TODO A randomiser
         self._positionPossibleBase = [(1, 1), (self._tailleTerrain[0] - 1, self._tailleTerrain[1] - 1),
                                       (1, self._tailleTerrain[1] - 1), (self._tailleTerrain[1] - 1, 1)]
-        self._currentPosition = 0
+        self._currentIndex = 0
+        self.generateFlag()
+
 
     # ---------------------
     # Fonction interne a la classe
     # ---------------------
 
-   # TODO
-    def __generateFlag(self):
-        pos = ()
+   # TODO A randomiser
+    def generateFlag(self):
+        pos = (self._tailleTerrain[0]//2, self._tailleTerrain[1]//2)
 
         self._land.clearObstacleAroundPosition(pos)
+        flag = Flag("Flag","Neutre", pos, 0, 0, 0, False)
+        self._land.addItem(flag)
 
-        pass
 
     # -------------------------------------------------------------------
     # ------------------ CONCERNANT L'INITIALISATION --------------------
@@ -51,9 +57,9 @@ class MoteurFlask():
 
     # Prendre le nom des équipes, renvoi la position de l'équipe
     def registerTeam(self, teamName):
-        team = Team(teamName, self._positionPossibleBase[self._currentPosition], self._land)
-        self._land.clearObstacleAroundPosition(self._positionPossibleBase[self._currentPosition])
-        self._currentPosition += 1
+        team = Team(teamName, self._positionPossibleBase[self._currentIndex], self._land)
+        self._land.clearObstacleAroundPosition(self._positionPossibleBase[self._currentIndex])
+        self._currentIndex += 1
         self._equipe[teamName] = team
         return team.basePosition
 
@@ -88,12 +94,13 @@ class MoteurFlask():
             team = self._equipe[teamName]
             unite = team.getUnitByName(unitName)
         except :
-            if cg.debug.debug:
-                print("[MoteurFlask.regardeAutour({}) Clef n'existe pas".format(unitName))
-            return "[MoteurFlask.regardeAutour({}) Clef n'existe pas".format(unitName)
+            if cg.debug:
+                print("[MoteurFlask.regardeAutour({})] Clef n'existe pas".format(unitName))
+            return "[MoteurFlask.regardeAutour({})] Clef n'existe pas".format(unitName)
 
-        print(self._land.lookAround(unite.getPosition(), unite.getRange()))
-        self.displayLand()
+        if cg.debug:
+            print(self._land.lookAround(unite.getPosition(), unite.getRange()))
+
         return self._land.lookAround(unite.getPosition(), unite.getRange())
 
     # Retour
@@ -136,7 +143,7 @@ class MoteurFlask():
             print("[MoteurFlask.deplacementUnite()] autre erreur: ", repr(e))
             return "[MoteurFlask.deplacementUnite()] autre erreur " + repr(e)
 
-        self._land.moveItem( unite, position )
+        self._land.moveItem(unite, position)
         self._presenter.parseLand(self._land)
 
         return "OK"
@@ -170,20 +177,19 @@ class MoteurFlask():
             degat = unite.getDegat()
             pvRestant = cible.takeShoot(degat)
 
-            if( cg.debug):
+            if cg.debug:
                 print("unite ", unite.getName(), " a tiré sur ", cible.getName(), "il lui reste ",
                       pvRestant)
-
 
         except KeyError:
             print("[MoteurFlask.deplacementUnite({})] no such unit".format(unitName))
             return "[MoteurFlask.deplacementUnite({})] no such unit".format(unitName)
-        except Exception as e :
+        except Exception as e:
             print(traceback.format_exc())
             print("[MoteurFlask.deplacementUnite()] autre erreur: ", repr(e))
             return "[MoteurFlask.deplacementUnite()] autre erreur " + repr(e)
 
-        self._land.moveItem( unite, position )
+        self._land.moveItem(unite, position)
         self._presenter.parseLand(self._land)
 
         return "OK"

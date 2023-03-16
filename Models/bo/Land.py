@@ -17,7 +17,7 @@ class Land():
         for itemz in items:
             self._plateau[itemz.getPosition()] = itemz
 
-        # TODO générer les obstacles
+        self.generateObstacle(0.05)
 
     def getDimension(self) -> Tuple[float, float]:
         return self._dimension
@@ -27,8 +27,8 @@ class Land():
         self._plateau[item.getPosition()] = item
 
     def removeItem(self, item : Item):
+        self._plateau.pop(item.getPosition())
         self._items.remove(item)
-        self._plateau.pop(item)
 
     def getItems(self):
         return self._items
@@ -82,13 +82,16 @@ class Land():
     # Une unité regarde autour d'elle
     def lookAround(self, position, portee):
         retour = {}
+        team = self._plateau[position].getTeamName()
         for x in range(-1,portee+1):
             for y in range(-1,portee+1):
                 if x != 0 or y != 0:
                     pos = (int(position[0])+int(x), int(position[1])+int(y))
-
+                    # Si case a portée, et contenant un item
                     if self.isAtCircleRange(position, pos, portee) and pos in self._plateau:
-                        retour[pos] = self._plateau[pos].getShortRepresentation()
+                        # si l'item ne fait pas parti de la meme team
+                        if not self._plateau[pos] == team :
+                            retour[pos] = self._plateau[pos].getShortRepresentation()
 
         return retour
 
@@ -141,10 +144,9 @@ class Land():
             y = random.uniform(0, maxY)
             # si la case est pas déjà prise
             if not (x,y) in self._plateau :
-                obs = Obstacle( (x,y))
+                obs = Obstacle((x,y))
                 self._plateau[(x,y)] = obs
                 self._items.append(obs)
-
 
     # Etabli un périmètre autour d'une case pour clean. ( drapeau et départ de team )
     def clearObstacleAroundPosition(self, position):

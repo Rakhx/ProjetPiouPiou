@@ -55,7 +55,7 @@ class Client():
     # fonction a appeler dans le while
     def newTurn(self):
         self.releasePriority()
-        time.sleep(5)
+        time.sleep(1)
         boardState = self.askPriority()
         return boardState
 
@@ -70,7 +70,8 @@ class Client():
         return r.text
 
     def tirer(self, unitName, pos):
-        pass
+        r = requests.get("http://127.0.0.1:5000/loop/shoot?team=" + self._name + "&unitName=" + unitName + self.posString(pos))
+        return r.text
 
     # --------------------------------------
     #   Autres

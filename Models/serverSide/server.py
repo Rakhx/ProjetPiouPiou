@@ -1,7 +1,14 @@
+import time
 from threading import Lock
 from flask import Flask, request
 from ProjectPiouPiou.Models.serverSide.MoteurFlask import MoteurFlask
 import ProjectPiouPiou.Models.bo.config as cg
+import tkinter as tk
+from tkinter import *
+
+import threading
+
+
 
 
 # --------------------------------------
@@ -11,6 +18,8 @@ app = Flask(__name__)
 moteur = MoteurFlask()
 lock = Lock()
 teamWithPrio = ""
+
+
 
 def convertToString(value):
     return [tuple(str(x) for x in value)]
@@ -78,6 +87,7 @@ def getPriority():
     if cg.debug :
         print("equipe " + param["team"] + " prend la priorite")
 
+    moteur.displayLand()
     return moteur.sumupSituation(param["team"])
 
 @app.route('/loop/releasePrio')
@@ -90,7 +100,3 @@ def releasePriority():
     except RuntimeError :
         return "Release quelque chose de déjà release"
 
-
-# --------------------------------------
-#   Initialisation de début de game
-# --------------------------------------

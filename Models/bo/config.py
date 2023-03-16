@@ -1,4 +1,4 @@
-tailleTerrainTuple = (50,50)
+tailleTerrainTuple = (20,20)
 
 Marines = (2,5,4,2)
 Artilleur = (1,2,3,3)

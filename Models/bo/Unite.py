@@ -60,5 +60,21 @@ class Unite(Item, ABC):
         return self._damage
 
     def takeShoot(self, degat):
-        self._pv = self._pv - degat
+        if self._isDestructible:
+            self._pv = self._pv - degat
         return self._pv
+
+    def moveToward(self, pos):
+        diffX = self.getPosition()[0] - pos[0]
+        diffY = self.getPosition()[1] - pos[1]
+        newPosX = self.getPosition()[0] + self.sign(diffX) * 1
+        newPosY = self.getPosition()[1] + self.sign(diffY) * 1
+        return newPosX,newPosY
+
+
+    def sign(self, value):
+        if value > 0 :
+            return 1
+        elif value < 0 :
+            return -1
+        return 0

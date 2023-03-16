@@ -1,15 +1,16 @@
 from ProjectPiouPiou.Models.bo.Artilleur import Artilleur
-from ProjectPiouPiou.Models.bo.Cible import Cible
+from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Marines import Marines
 from ProjectPiouPiou.Models.bo.Item import Item
 from ProjectPiouPiou.Models.bo.Land import Land
 from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
 from ProjectPiouPiou.Presenter.AbstractPresenter import AbstractPresenter
+from ProjectPiouPiou.View.AbstractView import AbstractView
 from ProjectPiouPiou.View.ConsoleView import ConsoleView
 
 
 class PresenterConsole(AbstractPresenter):
-    def __init__(self, view: ConsoleView):
+    def __init__(self, view: AbstractView):
         AbstractPresenter.__init__(self, view)
 
     def parseLand(self, land: Land):
@@ -22,29 +23,29 @@ class PresenterConsole(AbstractPresenter):
             for y in range(int(dimension[1])):
 
                 for item in land.getItems():
-                    if(item.isAtPosition((x,y))):
+                    if (item.isAtPosition((x, y))):
                         terrainAscii += self.getAsciiRepresentation(item)
                         posGetItem = True
-                        break # oui, oui...
-                if(posGetItem):
+                        break  # oui, oui...
+                if (posGetItem):
                     posGetItem = False
-                else :
+                else:
                     terrainAscii += "-"
             terrainAscii += "\n"
 
         self._view.displayLand(terrainAscii)
 
-    def getAsciiRepresentation(self, item : Item) -> str:
+    def getAsciiRepresentation(self, item: Item) -> str:
 
         repre = "-"
-        if(isinstance(item, Obstacle)):
+        if (isinstance(item, Obstacle)):
             repr = "o"
-        elif(isinstance(item, Artilleur)):
+        elif (isinstance(item, Artilleur)):
             repr = "/"
-        elif(isinstance(item, Marines)):
-            repr= ">"
-        elif(isinstance(item, Cible)):
-            repr= "x"
+        elif (isinstance(item, Marines)):
+            repr = ">"
+        elif (isinstance(item, Flag)):
+            repr = "F"
 
         # else:
         #     repr = "'"
