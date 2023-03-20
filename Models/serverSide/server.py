@@ -5,13 +5,13 @@ from ProjectPiouPiou.Models.serverSide.MoteurFlask import MoteurFlask
 import ProjectPiouPiou.Models.bo.config as cg
 import tkinter as tk
 from tkinter import *
-
 from threading import Thread
 
 
 
 def display_land(var):
     ROOT = Tk()
+    print("callOnce")
     LABEL = Label(ROOT, text="Hello, world!")
     LABEL.pack()
 
@@ -21,7 +21,6 @@ def display_land(var):
             label = Label(ROOT, text=var[0])
         label.pack()
         ROOT.update()
-
 
 data_lock = Lock()
 
@@ -34,7 +33,6 @@ lock = Lock()
 teamWithPrio = ""
 tempValue = ["hihi"]
 T = Thread(target=display_land, args=(tempValue,))
-print("hum?")
 T.start()
 
 
@@ -45,8 +43,6 @@ def modifyValue():
 
 def seeValue():
     with data_lock:
-
-
         print(tempValue)
 
 def convertToString(value):

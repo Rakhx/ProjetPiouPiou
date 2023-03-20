@@ -2,23 +2,19 @@ import json
 import time
 import requests
 
-
-class Client():
+# Classe qui va permettre de faire communiquer votre code avec le serveur.
+class MockClient():
 
     def __init__(self, teamName):
         self._name = teamName
         # Position de départ
-        r = requests.get("http://127.0.0.1:5000/init/register/"+teamName)
-        received = json.loads(r.text)
-        self._startPosition = tuple(int(i) for i in received[0])
+
+        self._startPosition = (1,1)
         # Taille du terrain
-        r = requests.get("http://127.0.0.1:5000/init/land")
-        received = json.loads(r.text)
-        self._tailleLand = tuple(int(i) for i in received[0])
-        # Liste d'unités disponibles
-        r = requests.get("http://127.0.0.1:5000/init/units")
-        received = json.loads(r.text)
-        self._unitDispos = tuple(i for i in received)
+
+        self._tailleLand = (40,40)
+
+        self._unitDispos = ["4:2,5,4,2,Marines","4:1,2,3,3,Artilleur","2:4,1,0,5,Eclaireur"]
 
     # --------------------------------------
     #   Initialisation de début de game
@@ -32,29 +28,19 @@ class Client():
     # ERR_NAME = nom de l'unité déjà utilisé
     # ERR_PLACE = Positionnement de l'unité non disponible
     def registerUnit(self, unitType,unitName, pos):
-        r = requests.get("http://127.0.0.1:5000/init/register?team=" + self._name + "&type=" + unitType +
-                         "&name=" + unitName + self.posString(pos))
-        return r.text
+        return "OK"
+
 
 
     # --------------------------------------
     #   Boucle en cours de  game
     # --------------------------------------
-    def askPriority(self):
-        r = requests.get("http://127.0.0.1:5000/loop/askPrio?team="+self._name)
-        received = json.loads(r.text)
-        test = tuple(i for i in received)
-        return test
-
-    def releasePriority(self):
-        r = requests.get("http://127.0.0.1:5000/loop/releasePrio")
-        return r.text
 
     # fonction a appeler dans le while
     def newTurn(self):
-        self.releasePriority()
         time.sleep(1)
-        boardState = self.askPriority()
+        # renvoyer son propre terrain si on veut tester correctement
+        boardState = []
         return boardState
 
 
@@ -76,8 +62,4 @@ class Client():
     # --------------------------------------
     def posString(self, pos):
         return "&posX=" + str(pos[0])+ "&posY=" + str(pos[1])
-
-
-#print(clientA.regarderAutour("Ultra"))
-#print(clientA.deplacer("Ultra", (1,0)))
 
