@@ -8,3 +8,5 @@ Eclaireur = (4,1,0,5)
 sleepTimeSc = 5
 
 debug = True
+
+viewGui = True

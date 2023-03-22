@@ -5,15 +5,15 @@ import ProjectPiouPiou.Models.bo.config as cg
 
 class Team():
 
-    def __init__(self, name, basePosition, land):
+    def __init__(self, name, cardinalite, basePosition, land):
         self._name = name
         self._land = land
         # dic [nom, classe]
         self._units = {}
         self.basePosition = basePosition
-
         self._nbUnitRegistered = 0
         self._nbEclaireurRegistered = 0
+        self.cardinalite = cardinalite # Team numéroté, plus facile
 
     # Appelée au début du tour
     def newTurn(self):

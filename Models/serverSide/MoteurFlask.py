@@ -1,3 +1,4 @@
+from ProjectPiouPiou.Models.bo.Base import Base
 from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Land import Land
 from ProjectPiouPiou.Models.serverSide.Team import Team
@@ -6,14 +7,11 @@ from ProjectPiouPiou.View.ConsoleView import ConsoleView
 import ProjectPiouPiou.Models.bo.config as cg
 import traceback
 
-from ProjectPiouPiou.View.GuiView import GuiView
-
 
 class MoteurFlask():
 
     def __init__(self):
         self._view = ConsoleView()
-        #self._view = GuiView()
         self._presenter = PresenterConsole(self._view)
 
         self._tailleTerrain = cg.tailleTerrainTuple
@@ -43,7 +41,6 @@ class MoteurFlask():
    # TODO A randomiser
     def generateFlag(self):
         pos = (self._tailleTerrain[0]//2, self._tailleTerrain[1]//2)
-
         self._land.clearObstacleAroundPosition(pos)
         flag = Flag("Flag","Neutre", pos, 0, 0, 0, False)
         self._land.addItem(flag)
@@ -57,7 +54,9 @@ class MoteurFlask():
 
     # Prendre le nom des équipes, renvoi la position de l'équipe
     def registerTeam(self, teamName):
-        team = Team(teamName, self._positionPossibleBase[self._currentIndex], self._land)
+        team = Team(teamName, self._currentIndex  ,self._positionPossibleBase[self._currentIndex], self._land)
+        base = Base(self._positionPossibleBase[self._currentIndex],teamName)
+        self._land.addItem(base)
         self._land.clearObstacleAroundPosition(self._positionPossibleBase[self._currentIndex])
         self._currentIndex += 1
         self._equipe[teamName] = team
@@ -86,7 +85,7 @@ class MoteurFlask():
         return resultat
 
     def displayLand(self):
-        self._presenter.parseLand(self._land)
+        return self._presenter.parseLand(self._land)
 
     # Une unité regarde autour d'elle
     def regardeAutour(self, teamName, unitName):
@@ -144,8 +143,6 @@ class MoteurFlask():
             return "[MoteurFlask.deplacementUnite()] autre erreur " + repr(e)
 
         self._land.moveItem(unite, position)
-        self._presenter.parseLand(self._land)
-
         return "OK"
 
     # Tire sur la case selectionnée, dommage fait si cible
@@ -190,7 +187,5 @@ class MoteurFlask():
             return "[MoteurFlask.deplacementUnite()] autre erreur " + repr(e)
 
         self._land.moveItem(unite, position)
-        self._presenter.parseLand(self._land)
-
         return "OK"
 

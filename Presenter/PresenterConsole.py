@@ -1,4 +1,6 @@
 from ProjectPiouPiou.Models.bo.Artilleur import Artilleur
+from ProjectPiouPiou.Models.bo.Base import Base
+from ProjectPiouPiou.Models.bo.Eclaireur import Eclaireur
 from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Marines import Marines
 from ProjectPiouPiou.Models.bo.Item import Item
@@ -7,6 +9,8 @@ from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
 from ProjectPiouPiou.Presenter.AbstractPresenter import AbstractPresenter
 from ProjectPiouPiou.View.AbstractView import AbstractView
 from ProjectPiouPiou.View.ConsoleView import ConsoleView
+import ProjectPiouPiou.Models.bo.config as cg
+
 
 
 class PresenterConsole(AbstractPresenter):
@@ -33,21 +37,26 @@ class PresenterConsole(AbstractPresenter):
                     terrainAscii += "-"
             terrainAscii += "\n"
 
-        self._view.displayLand(terrainAscii)
+        if not cg.viewGui:
+            self._view.displayLand(terrainAscii)
+        return terrainAscii
+
 
     def getAsciiRepresentation(self, item: Item) -> str:
 
-        repre = "-"
+        repr = "-"
         if (isinstance(item, Obstacle)):
-            repr = "o"
+            repr = "O"
         elif (isinstance(item, Artilleur)):
-            repr = "/"
+
+            repr = "A"
         elif (isinstance(item, Marines)):
-            repr = ">"
+            repr = "M"
+        elif (isinstance(item, Eclaireur)):
+            repr = "E"
+        elif (isinstance(item, Base)):
+            repr = "B"
         elif (isinstance(item, Flag)):
             repr = "F"
-
-        # else:
-        #     repr = "'"
 
         return repr

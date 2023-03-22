@@ -6,44 +6,35 @@ import ProjectPiouPiou.Models.bo.config as cg
 import tkinter as tk
 from tkinter import *
 from threading import Thread
-
-
+from ProjectPiouPiou.View.ThreadedView import ThreadedView
 
 def display_land(var):
-    ROOT = Tk()
-    print("callOnce")
-    LABEL = Label(ROOT, text="Hello, world!")
-    LABEL.pack()
-
-    while True:
-        time.sleep(2)
-        with data_lock:
-            label = Label(ROOT, text=var[0])
-        label.pack()
-        ROOT.update()
+    view = ThreadedView()
+    view.loop(data_lock, var)
 
 data_lock = Lock()
 
 # --------------------------------------
 #   Element autre de la classe
 # --------------------------------------
+
 app = Flask(__name__)
 moteur = MoteurFlask()
 lock = Lock()
+land = ["--------------------\n->------------------\n->------------------\n"]
 teamWithPrio = ""
-tempValue = ["hihi"]
-T = Thread(target=display_land, args=(tempValue,))
-T.start()
+T = Thread(target=display_land, args=(land,))
+if(cg.viewGui):
+    T.start()
 
-
-def modifyValue():
+def modifyValue(representation):
     with data_lock:
-        global tempValue
-        tempValue[0] = tempValue[0] + "hi"
+        global land
+        land[0] = representation
 
 def seeValue():
-    with data_lock:
-        print(tempValue)
+     with data_lock:
+         print(land[0])
 
 def convertToString(value):
     return [tuple(str(x) for x in value)]
@@ -89,14 +80,11 @@ def profile(username):
 @app.route('/loop/lookAround', methods=['GET'])
 def regarderAutour():
     param =  request.args.to_dict()
-    modifyValue()
-    seeValue()
     return [tuple(str(x) for x in moteur.regardeAutour(param["team"],param["unitName"]))]
-
 
 @app.route('/loop/move', methods=['GET'])
 def deplacementUnite():
-    param =  request.args.to_dict()
+    param = request.args.to_dict()
     return moteur.deplacementUnite(param["team"],param["unitName"], (int(param["posX"]), int(param["posY"])))
 
 @app.route('/loop/shoot', methods=['GET'])
@@ -114,8 +102,10 @@ def getPriority():
     teamWithPrio = param["team"]
     if cg.debug :
         print("equipe " + param["team"] + " prend la priorite")
-
-    moteur.displayLand()
+    # TODO checker ici
+    representation = moteur.displayLand()
+    modifyValue(representation)
+    seeValue()
     return moteur.sumupSituation(param["team"])
 
 @app.route('/loop/releasePrio')
