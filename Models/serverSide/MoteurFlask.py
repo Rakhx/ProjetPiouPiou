@@ -54,12 +54,16 @@ class MoteurFlask():
 
     # Prendre le nom des équipes, renvoi la position de l'équipe
     def registerTeam(self, teamName):
-        team = Team(teamName, self._currentIndex  ,self._positionPossibleBase[self._currentIndex], self._land)
-        base = Base(self._positionPossibleBase[self._currentIndex],teamName)
+        numeroTeam = self._currentIndex
+        positionTeam = self._positionPossibleBase[self._currentIndex]
+        # self._equipeFromNumToName[numeroTeam] = teamName
+        team = Team(teamName, numeroTeam, positionTeam, self._land)
+        base = Base(positionTeam, teamName)
         self._land.addItem(base)
-        self._land.clearObstacleAroundPosition(self._positionPossibleBase[self._currentIndex])
-        self._currentIndex += 1
+        self._land.clearObstacleAroundPosition(positionTeam)
         self._equipe[teamName] = team
+        self._currentIndex += 1
+        cg.equipes[teamName] = numeroTeam
         return team.basePosition
 
     # En fonction de la team, en bas a hauche ou en haut a droite

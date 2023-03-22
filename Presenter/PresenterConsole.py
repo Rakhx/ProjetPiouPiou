@@ -41,22 +41,27 @@ class PresenterConsole(AbstractPresenter):
             self._view.displayLand(terrainAscii)
         return terrainAscii
 
-
     def getAsciiRepresentation(self, item: Item) -> str:
 
-        repr = "-"
-        if (isinstance(item, Obstacle)):
-            repr = "O"
-        elif (isinstance(item, Artilleur)):
+        repr = item.getShortClasse()
+        if (cg.equipes[item.getTeamName()] == 0):
+            repr = repr.lower()
 
-            repr = "A"
-        elif (isinstance(item, Marines)):
-            repr = "M"
-        elif (isinstance(item, Eclaireur)):
-            repr = "E"
-        elif (isinstance(item, Base)):
-            repr = "B"
-        elif (isinstance(item, Flag)):
-            repr = "F"
+        # if (isinstance(item, Obstacle)):
+        #
+        #     repr = item.getShortRepresentation()
+        # elif (isinstance(item, Artilleur)):
+        #     repr = "A"
+        # elif (isinstance(item, Marines)):
+        #     if(cg.equipes[item.getTeamName()] == 0 ):
+        #         repr = "M"
+        #     else :
+        #         repr = "m"
+        # elif (isinstance(item, Eclaireur)):
+        #     repr = "E"
+        # elif (isinstance(item, Base)):
+        #     repr = "B"
+        # elif (isinstance(item, Flag)):
+        #     repr = "F"
 
         return repr
