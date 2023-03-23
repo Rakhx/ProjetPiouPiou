@@ -29,5 +29,5 @@ while compteur < 15:
     #if retour :
      #   posDep = moveToward(posDep,(10,10))
 
-clientA.releasePriority()
+clientA.__releasePriority()
 

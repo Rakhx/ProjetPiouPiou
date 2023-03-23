@@ -15,7 +15,7 @@ while ( compteur < 5 ):
     print(clientB.deplacer("marinesB", (departM,30) ))
     compteur = compteur + 1
 
-clientB.releasePriority()
+clientB.__releasePriority()
 
 
 #print(clientA.regarderAutour("Ultra"))
