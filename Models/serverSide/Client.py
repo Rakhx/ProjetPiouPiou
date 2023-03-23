@@ -31,27 +31,18 @@ class Client:
     # ERR_PLACE = Positionnement de l'unité non disponible
     def registerUnit(self, unitType, unitName, pos):
         r = requests.get("http://127.0.0.1:5000/init/register?team=" + self._name + "&type=" + unitType +
-                         "&name=" + unitName + self.posString(pos))
+                         "&name=" + unitName + self.__posString(pos))
         return r.text
 
     # --------------------------------------
     #   Boucle en cours de  game
     # --------------------------------------
-    def askPriority(self):
-        r = requests.get("http://127.0.0.1:5000/loop/askPrio?team=" + self._name)
-        received = json.loads(r.text)
-        test = tuple(i for i in received)
-        return test
-
-    def releasePriority(self):
-        r = requests.get("http://127.0.0.1:5000/loop/releasePrio")
-        return r.text
 
     # fonction a appeler dans le while
     def newTurn(self):
         self.releasePriority()
         time.sleep(1)
-        boardState = self.askPriority()
+        boardState = self.__askPriority()
         return boardState
 
     def regarderAutour(self, unitName):
@@ -61,16 +52,27 @@ class Client:
 
     def deplacer(self, unitName, pos):
         r = requests.get(
-            "http://127.0.0.1:5000/loop/move?team=" + self._name + "&unitName=" + unitName + self.posString(pos))
+            "http://127.0.0.1:5000/loop/move?team=" + self._name + "&unitName=" + unitName + self.__posString(pos))
         return r.text
 
     def tirer(self, unitName, pos):
         r = requests.get(
-            "http://127.0.0.1:5000/loop/shoot?team=" + self._name + "&unitName=" + unitName + self.posString(pos))
+            "http://127.0.0.1:5000/loop/shoot?team=" + self._name + "&unitName=" + unitName + self.__posString(pos))
         return r.text
 
     # --------------------------------------
     #   Autres
     # --------------------------------------
-    def posString(self, pos):
+
+    def __askPriority(self):
+        r = requests.get("http://127.0.0.1:5000/loop/askPrio?team=" + self._name)
+        received = json.loads(r.text)
+        test = tuple(i for i in received)
+        return test
+
+    def releasePriority(self):
+        r = requests.get("http://127.0.0.1:5000/loop/releasePrio")
+        return r.text
+
+    def __posString(self, pos):
         return "&posX=" + str(pos[0]) + "&posY=" + str(pos[1])

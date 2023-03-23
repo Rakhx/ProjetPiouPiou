@@ -9,4 +9,5 @@ sleepTimeSc = 5
 debug = True
 viewGui = True
 equipes = {}
+equipes["Neutre"] = -1
 
