@@ -1,6 +1,9 @@
+import random
+
 from ProjectPiouPiou.Models.bo.Base import Base
 from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Land import Land
+from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
 from ProjectPiouPiou.Models.serverSide.Team import Team
 from ProjectPiouPiou.Presenter.PresenterConsole import PresenterConsole
 from ProjectPiouPiou.View.ConsoleView import ConsoleView
@@ -27,23 +30,53 @@ class MoteurFlask():
 
         self._land = Land(self._tailleTerrain)
         self._equipe = {}
+        self._currentIndex = 0
         # TODO A randomiser
         self._positionPossibleBase = [(1, 1), (self._tailleTerrain[0] - 1, self._tailleTerrain[1] - 1),
                                       (1, self._tailleTerrain[1] - 1), (self._tailleTerrain[1] - 1, 1)]
-        self._currentIndex = 0
-        self.generateFlag()
 
+        self._land.generateObstacle(0.05)
+        # clear obstacle include dans la fn
+        self._land.generateFlag()
+        for pos in self._positionPossibleBase:
+            self._land.clearObstacleAroundPosition(pos)
 
     # ---------------------
     # Fonction interne a la classe
     # ---------------------
 
-   # TODO A randomiser
-    def generateFlag(self):
-        pos = (self._tailleTerrain[0]//2, self._tailleTerrain[1]//2)
-        self._land.clearObstacleAroundPosition(pos)
-        flag = Flag("Flag","Neutre", pos, 0, 0, 0, False)
-        self._land.addItem(flag)
+   # # TODO A randomiser
+   #  def generateFlag(self):
+   #      pos = (self._tailleTerrain[0]//2, self._tailleTerrain[1]//2)
+   #      self._land.clearObstacleAroundPosition(pos)
+   #      flag = Flag("Flag","Neutre", pos, 0, 0, 0, False)
+   #      self._land.addItem(flag)
+
+    # # genere les obstacles sur la map, aléatoirement
+    # def generateObstacle(self, pourcentage):
+    #     maxX = self._land.getDimension[0]
+    #     maxY = self._land.getDimension[1]
+    #     nbCase = maxX * maxY
+    #     nbObstacle = int(nbCase * pourcentage)
+    #     for i in range(nbObstacle) :
+    #         x = random.uniform(0, maxX)
+    #         y = random.uniform(0, maxY)
+    #         # si la case est pas déjà prise
+    #         if not (x,y) in self._land.getPlateau() :
+    #             obs = Obstacle((x,y))
+    #             self._land.getPlateau()[(x,y)] = obs
+    #             self._land.getPlateau().append(obs)
+    #
+    # # Etabli un périmètre autour d'une case pour clean. ( drapeau et départ de team )
+    # def clearObstacleAroundPosition(self, position):
+    #     for x in range(-1, 2):
+    #         for y in range(-1, 2):
+    #             pos = (position[0]+x, position[1]+y)
+    #             if pos in self._land.getPlateau() :
+    #                 itemToRmv = self._land.getPlateau().pop(pos)
+    #                 self._land.removeItem(itemToRmv)
+
+
 
 
     # -------------------------------------------------------------------

@@ -3,6 +3,8 @@ import math
 import random
 from typing import Tuple
 from typing import List
+
+from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Item import Item
 from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
 
@@ -17,11 +19,10 @@ class Land():
         for itemz in items:
             self._plateau[itemz.getPosition()] = itemz
 
-        self.generateObstacle(0.05)
-
     def getDimension(self) -> Tuple[float, float]:
         return self._dimension
-
+    def getPlateau(self):
+        return self._plateau
     def addItem(self, item : Item ):
         self._items.append(item)
         self._plateau[item.getPosition()] = item
@@ -148,6 +149,12 @@ class Land():
                 self._plateau[(x,y)] = obs
                 self._items.append(obs)
 
+    def generateFlag(self):
+        pos = (self._dimension[0]//2, self._dimension[1]//2)
+        self.clearObstacleAroundPosition(pos)
+        flag = Flag("Flag","Neutre", pos, 0, 0, 0, False)
+        self.addItem(flag)
+
     # Etabli un périmètre autour d'une case pour clean. ( drapeau et départ de team )
     def clearObstacleAroundPosition(self, position):
         for x in range(-1, 2):
@@ -156,3 +163,5 @@ class Land():
                 if pos in self._plateau :
                     itemToRmv = self._plateau.pop(pos)
                     self._items.remove(itemToRmv)
+
+
