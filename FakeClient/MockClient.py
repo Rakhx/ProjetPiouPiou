@@ -2,19 +2,25 @@ import json
 import time
 import requests
 
+from ProjectPiouPiou.FakeClient.Automaton import Automaton
+from ProjectPiouPiou.FakeClient.MockServer import MockServer
+
+
 # Classe qui va permettre de faire communiquer votre code avec le serveur.
 class MockClient():
 
     def __init__(self, teamName):
+        self._server = MockServer()
         self._name = teamName
+        self._server.registerTeam(teamName)
         # Position de départ
-
-        self._startPosition = (1,1)
+        self.startPosition = (1,1)
         # Taille du terrain
+        self.tailleLand = (40,40)
+        self.unitDispos = ["4:2,5,4,2,Marines","4:1,2,3,3,Artilleur","2:4,1,0,5,Eclaireur"]
+        # AJout du bot
+        self._automate = Automaton(self._server)
 
-        self._tailleLand = (40,40)
-
-        self._unitDispos = ["4:2,5,4,2,Marines","4:1,2,3,3,Artilleur","2:4,1,0,5,Eclaireur"]
 
     # --------------------------------------
     #   Initialisation de début de game
@@ -28,8 +34,13 @@ class MockClient():
     # ERR_NAME = nom de l'unité déjà utilisé
     # ERR_PLACE = Positionnement de l'unité non disponible
     def registerUnit(self, unitType,unitName, pos):
-        return "OK"
-
+        param = {}
+        param["team"] = self._name
+        param["type"] = unitType
+        param["name"] = unitName
+        param["posX"] = pos[0]
+        param["posY"] = pos[1]
+        return self._server.registerUnit(param)
 
 
     # --------------------------------------
@@ -39,27 +50,42 @@ class MockClient():
     # fonction a appeler dans le while
     def newTurn(self):
         time.sleep(1)
+        # fait jouer le bot
+        self._automate.playTurn()
+
         # renvoyer son propre terrain si on veut tester correctement
         boardState = []
         return boardState
 
-
     def regarderAutour(self, unitName):
-        r = requests.get("http://127.0.0.1:5000/loop/lookAround?team="+self._name + "&unitName=" + unitName)
-        received = json.loads(r.text)
-        return tuple(i for i in received)
+        param = {}
+        param["team"] = self._name
+        param["name"] = unitName
+        return self._server.regarderAutour(param)
 
     def deplacer(self, unitName, pos):
-        r = requests.get("http://127.0.0.1:5000/loop/move?team="+self._name + "&unitName=" + unitName + self.posString(pos))
-        return r.text
+        param = {}
+        param["team"] = self._name
+        param["name"] = unitName
+        param["posX"] = pos[0]
+        param["posY"] = pos[1]
+        return self._server.deplacementUnite(param)
 
     def tirer(self, unitName, pos):
-        r = requests.get("http://127.0.0.1:5000/loop/shoot?team=" + self._name + "&unitName=" + unitName + self.posString(pos))
-        return r.text
+        param = {"team": self._name, "name": unitName, "posX": pos[0], "posY": pos[1]}
+        return self._server.tirer(param)
+
+
+    # Fait jouer le bot
+    def newTurn(self):
+        time.sleep(1)
+        boardState = self._server.sumUpSituaiton({"team" : self._name})
+
 
     # --------------------------------------
     #   Autres
     # --------------------------------------
     def posString(self, pos):
         return "&posX=" + str(pos[0])+ "&posY=" + str(pos[1])
+
 
