@@ -49,7 +49,7 @@ class MockClient():
 
     # fonction a appeler dans le while
     def newTurn(self):
-        time.sleep(1)
+        time.sleep(.1)
         # fait jouer le bot
         self._automate.playTurn()
 
@@ -66,7 +66,7 @@ class MockClient():
     def deplacer(self, unitName, pos):
         param = {}
         param["team"] = self._name
-        param["name"] = unitName
+        param["unitName"] = unitName
         param["posX"] = pos[0]
         param["posY"] = pos[1]
         return self._server.deplacementUnite(param)
@@ -80,6 +80,7 @@ class MockClient():
     def newTurn(self):
         time.sleep(1)
         boardState = self._server.sumUpSituaiton({"team" : self._name})
+        return (boardState)
 
 
     # --------------------------------------

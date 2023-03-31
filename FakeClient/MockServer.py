@@ -53,12 +53,6 @@ class MockServer:
 
     def sumUpSituaiton(self, param):
         teamWithPrio = param["team"]
-        # if cg.debug:
-        #     print("equipe " + param["team"] + " prend la priorite")
-        # representation = self._moteur.displayLand()
-        #
-        # # modifyValue(representation)
-
         return self._moteur.sumupSituation(param["team"])
 
 def convertToString(value):
