@@ -23,6 +23,9 @@ class MockServer:
 
         return message
 
+    def getUniteDispos(self):
+        return self._moteur.getStartUnite()
+
     # --------------------------------------
     #   Boucle en cours de  game
     # --------------------------------------

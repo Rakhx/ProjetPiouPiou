@@ -4,7 +4,7 @@ import requests
 
 from ProjectPiouPiou.FakeClient.Automaton import Automaton
 from ProjectPiouPiou.FakeClient.MockServer import MockServer
-
+import ProjectPiouPiou.Models.bo.config as cg
 
 # Classe qui va permettre de faire communiquer votre code avec le serveur.
 class MockClient():
@@ -16,8 +16,8 @@ class MockClient():
         # Position de départ
         self.startPosition = (1,1)
         # Taille du terrain
-        self.tailleLand = (40,40)
-        self.unitDispos = ["4:2,5,4,2,Marines","4:1,2,3,3,Artilleur","2:4,1,0,5,Eclaireur"]
+        self.tailleLand = cg.tailleTerrainTuple
+        self.unitDispos = self._server.getUniteDispos()
         # AJout du bot
         self._automate = Automaton(self._server)
 
@@ -60,7 +60,7 @@ class MockClient():
     def regarderAutour(self, unitName):
         param = {}
         param["team"] = self._name
-        param["name"] = unitName
+        param["unitName"] = unitName
         return self._server.regarderAutour(param)
 
     def deplacer(self, unitName, pos):
@@ -72,7 +72,7 @@ class MockClient():
         return self._server.deplacementUnite(param)
 
     def tirer(self, unitName, pos):
-        param = {"team": self._name, "name": unitName, "posX": pos[0], "posY": pos[1]}
+        param = {"team": self._name, "unitName": unitName, "posX": pos[0], "posY": pos[1]}
         return self._server.tirer(param)
 
 

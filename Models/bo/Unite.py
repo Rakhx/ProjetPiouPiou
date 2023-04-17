@@ -24,8 +24,11 @@ class Unite(Item, ABC):
     def getPosition(self):
         return self._position
 
-    def getRange(self):
+    def getVision(self):
         return self._vision
+
+    def getMvt(self):
+        return self._mvt
 
     #chaque unité va avoir une maniere différente de se déplacer
     def seDeplacer(self):
@@ -69,6 +72,23 @@ class Unite(Item, ABC):
         newPosX = self.getPosition()[0] + self.sign(diffX) * 1
         newPosY = self.getPosition()[1] + self.sign(diffY) * 1
         return newPosX,newPosY
+
+    def moveRandomlyToward(self, pos):
+        diffX = self.getPosition()[0] - pos[0]
+        diffY = self.getPosition()[1] - pos[1]
+        newPosX = self.getPosition()[0] + self.sign(diffX) * 1
+        newPosY = self.getPosition()[1] + self.sign(diffY) * 1
+        # Ajout d'un bruit random
+        if random.randint(0,10) > 8 :
+            # si pair, horizontal
+            direc = random.randint(1,4)
+            if direc % 2 == 0:
+                newPosY += direc - 3
+            # vertical
+            else :
+                newPosX += direc - 2
+
+        return newPosX, newPosY
 
 
     def sign(self, value):

@@ -83,16 +83,21 @@ class Land():
     # Une unité regarde autour d'elle
     def lookAround(self, position, portee):
         retour = {}
-        team = self._plateau[position].getTeamName()
-        for x in range(-1,portee+1):
-            for y in range(-1,portee+1):
-                if x != 0 or y != 0:
-                    pos = (int(position[0])+int(x), int(position[1])+int(y))
-                    # Si case a portée, et contenant un item
-                    if self.isAtCircleRange(position, pos, portee) and pos in self._plateau:
-                        # si l'item ne fait pas parti de la meme team
-                        if not self._plateau[pos] == team :
-                            retour[pos] = self._plateau[pos].getShortRepresentation()
+        try :
+            team = self._plateau[position].getTeamName()
+            for x in range(-1,portee+1):
+                for y in range(-1,portee+1):
+                    if x != 0 or y != 0:
+                        pos = (int(position[0])+int(x), int(position[1])+int(y))
+                        # Si case a portée, et contenant un item
+                        if self.isAtCircleRange(position, pos, portee) and pos in self._plateau:
+                            # si l'item ne fait pas parti de la meme team
+                            if not self._plateau[pos].getTeamName() == team :
+                                # Avec Pv ou sans PV?
+                                #retour[pos] = self._plateau[pos].getShortRepresentation()
+                                retour[pos] = self._plateau[pos].getShortClasse()
+        except KeyError:
+            print("[Land.lookAround] keyError avec la team de l'unité a position " + str(position) )
 
         return retour
 

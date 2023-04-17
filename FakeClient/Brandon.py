@@ -38,7 +38,7 @@ continuer = True
 compteur = 0
 while continuer :
     boardState = client.newTurn()
-    compteur = compteur +1
+    compteur = compteur + 1
     if compteur < 20 :
         newPos = mar1.seDeplacer()
         res = client.deplacer(mar1.getName(), newPos)
@@ -46,6 +46,8 @@ while continuer :
         if(res.lower() == "ok" ) :
             mar1.setPosition(newPos)
             print("deplacement du marines vers " + str(newPos))
+        if compteur == 1 :
+            print(client.tirer("ultra1", (18,18)))
     else :
         continuer = False
 
