@@ -21,8 +21,10 @@ class Land():
 
     def getDimension(self) -> Tuple[float, float]:
         return self._dimension
+
     def getPlateau(self):
         return self._plateau
+
     def addItem(self, item : Item ):
         self._items.append(item)
         self._plateau[item.getPosition()] = item
@@ -44,7 +46,10 @@ class Land():
         return resume
 
     def moveItem(self, item, position):
+
         self._plateau[position] = item
+        if item.getPosition() == (5, 5):
+            print("NIAH")
         del self._plateau[item.getPosition()]
         item.setPosition(position)
 
@@ -130,7 +135,6 @@ class Land():
                 if(range > 0):
                     self.exploRecu(posOk, posPossible, position, range)
 
-
     # retourne une liste qui contient toutes les cases vides
     def cleanCase(self, listCase):
         caseClean = []
@@ -169,4 +173,7 @@ class Land():
                     itemToRmv = self._plateau.pop(pos)
                     self._items.remove(itemToRmv)
 
-
+    def debugSumUp(self):
+        for posUnit in self._plateau:
+            unit = self._plateau[posUnit]
+            print ("pos ",posUnit, " unit ", unit.getShortClasse(), "team ", unit.getTeamName())

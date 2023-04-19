@@ -54,14 +54,15 @@ class MockClient():
         self._automate.playTurn()
 
         # renvoyer son propre terrain si on veut tester correctement
-        boardState = []
+        boardState = boardState = self._server.sumUpSituaiton({"team" : self._name})
         return boardState
 
     def regarderAutour(self, unitName):
         param = {}
         param["team"] = self._name
         param["unitName"] = unitName
-        return self._server.regarderAutour(param)
+        resultat =  self._server.regarderAutour(param)
+        return resultat
 
     def deplacer(self, unitName, pos):
         param = {}
@@ -74,13 +75,6 @@ class MockClient():
     def tirer(self, unitName, pos):
         param = {"team": self._name, "unitName": unitName, "posX": pos[0], "posY": pos[1]}
         return self._server.tirer(param)
-
-
-    # Fait jouer le bot
-    def newTurn(self):
-        time.sleep(1)
-        boardState = self._server.sumUpSituaiton({"team" : self._name})
-        return (boardState)
 
 
     # --------------------------------------

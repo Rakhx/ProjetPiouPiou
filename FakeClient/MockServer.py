@@ -55,6 +55,7 @@ class MockServer:
 
 
     def sumUpSituaiton(self, param):
+        self._moteur.displayLand()
         teamWithPrio = param["team"]
         return self._moteur.sumupSituation(param["team"])
 

@@ -4,7 +4,6 @@ from ProjectPiouPiou.Models.bo.Eclaireur import Eclaireur
 from ProjectPiouPiou.Models.bo.Marines import Marines
 from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
 
-
 class Automaton:
     def __init__(self, serveur):
         self._server = serveur
@@ -47,7 +46,7 @@ class Automaton:
         param = {"team": self._name, "type": "Eclaireur", "name": "botEcl2", "posX": self._startPosition[0] + 1,
                  "posY": self._startPosition[1] - 1}
         self._server.registerUnit(param)
-        eclai2 = Eclaireur("eclai1", "létrofor", (posX + 1, posY - 1), stats[0], stats[1], stats[2], stats[3])
+        eclai2 = Eclaireur("botEcl2", "létrofor", (posX + 1, posY - 1), stats[0], stats[1], stats[2], stats[3])
         self._mesUnites.append(eclai2)
 
     def playTurn(self):
@@ -61,14 +60,15 @@ class Automaton:
             vu = self._server.regarderAutour(param)
             # Dictionnaire : k : position v:(shortName, pv)
             for positionItem in vu :
-                if vu[positionItem] != "O":
-                    self._posMechants.append(positionItem)
+                pass
+                # if vu[positionItem] != "O":
+                #     self._posMechants.append(positionItem)
 
         # Deplacement des unités
-        if not self._posMechants.isEmpty():
-            target = self._posMechants[0]
-        else :
+        if not self._posMechants:
             target = self._mapCenter
+        else :
+            target = self._posMechants[0]
 
         for unite in self._mesUnites:
             posVoulu = unite.moveRandomlyToward(target)

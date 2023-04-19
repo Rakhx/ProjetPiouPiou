@@ -132,6 +132,8 @@ class MoteurFlask():
         return resultat
 
     def displayLand(self):
+        if(cg.debug):
+            self._land.debugSumUp()
         return self._presenter.parseLand(self._land)
 
     # Une unité regarde autour d'elle
@@ -170,6 +172,10 @@ class MoteurFlask():
             if unite in self._alrdyMov:
                 return "ALRDY_MOV"
             self._alrdyMov.append(unite)
+
+            # Verification que le déplacement se fait dans la carte
+            if position[0] < 0 or position[0] > cg.tailleTerrainTuple[0] or position[1] < 0 or position[1] > cg.tailleTerrainTuple[1]:
+                return "NO_SIZELAND"
 
             # Verification que la case est disponible
             if self._land.getItemOrFalseAtPosition(position):

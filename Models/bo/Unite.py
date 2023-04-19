@@ -74,8 +74,8 @@ class Unite(Item, ABC):
         return newPosX,newPosY
 
     def moveRandomlyToward(self, pos):
-        diffX = self.getPosition()[0] - pos[0]
-        diffY = self.getPosition()[1] - pos[1]
+        diffX = pos[0] - self.getPosition()[0]
+        diffY = pos[1] - self.getPosition()[1]
         newPosX = self.getPosition()[0] + self.sign(diffX) * 1
         newPosY = self.getPosition()[1] + self.sign(diffY) * 1
         # Ajout d'un bruit random
@@ -89,7 +89,6 @@ class Unite(Item, ABC):
                 newPosX += direc - 2
 
         return newPosX, newPosY
-
 
     def sign(self, value):
         if value > 0 :

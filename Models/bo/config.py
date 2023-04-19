@@ -1,4 +1,4 @@
-tailleTerrainTuple = (20,20)
+tailleTerrainTuple = (10,10)
 
 #Deplacement, pv , degat, vision
 Marines = (2,5,4,2)
@@ -8,6 +8,7 @@ Eclaireur = (4,1,0,5)
 #Temps d'arrêt entre le relachement de priorité et la demande pour le cycle suivant
 sleepTimeSc = 5
 debug = True
-viewGui = True
+viewGui = False
 equipes = {}
+equipes["Neutre"] = -1
 
