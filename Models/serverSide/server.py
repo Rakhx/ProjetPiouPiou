@@ -80,7 +80,8 @@ def profile(username):
 @app.route('/loop/lookAround', methods=['GET'])
 def regarderAutour():
     param =  request.args.to_dict()
-    return [tuple(str(x) for x in moteur.regardeAutour(param["team"],param["unitName"]))]
+    # return [tuple(str(x) for x in moteur.regardeAutour(param["team"],param["unitName"]))]
+    return moteur.regardeAutour(param["team"],param["unitName"])
 
 @app.route('/loop/move', methods=['GET'])
 def deplacementUnite():

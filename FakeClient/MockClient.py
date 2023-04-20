@@ -52,9 +52,7 @@ class MockClient():
         time.sleep(.1)
         # fait jouer le bot
         self._automate.playTurn()
-
-        # renvoyer son propre terrain si on veut tester correctement
-        boardState = boardState = self._server.sumUpSituaiton({"team" : self._name})
+        boardState = self._server.sumUpSituaiton({"team" : self._name})
         return boardState
 
     def regarderAutour(self, unitName):

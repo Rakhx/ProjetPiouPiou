@@ -36,21 +36,23 @@ class Land():
     def getItems(self):
         return self._items
 
+
     def getResume(self, teamName):
         resume = []
         for pos in self._plateau:
             item = self._plateau[pos]
-            if(item.getTeamName() == teamName):
-                resume.append( (pos,item.getName(), item.getPosition()[0], item.getPosition()[1], item.getPV()))
-        print(resume)
+            if item.getTeamName() == teamName:
+                resume.append( (pos, item.getName(), item.getPV()) )
         return resume
 
     def moveItem(self, item, position):
-
         self._plateau[position] = item
         if item.getPosition() == (5, 5):
             print("NIAH")
-        del self._plateau[item.getPosition()]
+        try :
+            del self._plateau[item.getPosition()]
+        except KeyError as k :
+            print ("KEYERROR: ", k)
         item.setPosition(position)
 
     # Renvoi l'objet a la position donnée, ou False si case disponible
@@ -88,6 +90,7 @@ class Land():
     # Une unité regarde autour d'elle
     def lookAround(self, position, portee):
         retour = {}
+        retourTuple = []
         try :
             team = self._plateau[position].getTeamName()
             for x in range(-1,portee+1):
@@ -97,14 +100,16 @@ class Land():
                         # Si case a portée, et contenant un item
                         if self.isAtCircleRange(position, pos, portee) and pos in self._plateau:
                             # si l'item ne fait pas parti de la meme team
-                            if not self._plateau[pos].getTeamName() == team :
+                            # TODO
+                            if not self._plateau[pos].getTeamName() == team or True :
                                 # Avec Pv ou sans PV?
-                                #retour[pos] = self._plateau[pos].getShortRepresentation()
                                 retour[pos] = self._plateau[pos].getShortClasse()
+                                retourTuple.append( (pos, self._plateau[pos].getShortClasse())   )
+                                #retour[pos] = self._plateau[pos].getShortRepresentation()
         except KeyError:
             print("[Land.lookAround] keyError avec la team de l'unité a position " + str(position) )
 
-        return retour
+        return retourTuple
 
     # inverse le contenu du plateau pour pos1 et pos2
     def deplacerUnite(self, position1, position2):
@@ -150,8 +155,8 @@ class Land():
         nbCase = maxX * maxY
         nbObstacle = int(nbCase * pourcentage)
         for i in range(nbObstacle) :
-            x = random.uniform(0, maxX)
-            y = random.uniform(0, maxY)
+            x = int(random.uniform(0, maxX))
+            y = int(random.uniform(0, maxY))
             # si la case est pas déjà prise
             if not (x,y) in self._plateau :
                 obs = Obstacle((x,y))

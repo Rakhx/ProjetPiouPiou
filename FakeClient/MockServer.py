@@ -32,7 +32,7 @@ class MockServer:
 
     # regarde autour
     def regarderAutour(self, param):
-        return [tuple(str(x) for x in self._moteur.regardeAutour(param["team"], param["unitName"]))]
+        return self._moteur.regardeAutour(param["team"], param["unitName"])
 
     def deplacementUnite(self, param):
         return self._moteur.deplacementUnite(param["team"], param["unitName"], (int(param["posX"]), int(param["posY"])))
@@ -55,8 +55,9 @@ class MockServer:
 
 
     def sumUpSituaiton(self, param):
-        self._moteur.displayLand()
-        teamWithPrio = param["team"]
+        if cg.debug :
+            self._moteur.displayLand()
+
         return self._moteur.sumupSituation(param["team"])
 
 def convertToString(value):

@@ -51,18 +51,18 @@ class Automaton:
 
     def playTurn(self):
         self._posMechants.clear()
-        param = {}
+        param = {"team": self._name}
 
         # Regarder autour
-        param["team"] = self._name
         for unite in self._mesUnites :
             param["unitName"] = unite.getName()
             vu = self._server.regarderAutour(param)
             # Dictionnaire : k : position v:(shortName, pv)
-            for positionItem in vu :
-                pass
-                # if vu[positionItem] != "O":
-                #     self._posMechants.append(positionItem)
+            if not () in vu :
+                # ( (pos,pos), type )
+                for tuple in vu :
+                    if tuple[1] != "O":
+                        self._posMechants.append(tuple[0])
 
         # Deplacement des unités
         if not self._posMechants:
