@@ -110,7 +110,7 @@ class Land():
                         if self.isAtCircleRange(position, pos, portee) and pos in self._plateau:
                             # si l'item ne fait pas parti de la meme team
                             # TODO
-                            if not self._plateau[pos].getTeamName() == team or True :
+                            if not self._plateau[pos].getTeamName() == team :
                                 # Avec Pv ou sans PV?
                                 retour[pos] = self._plateau[pos].getShortClasse()
                                 retourTuple.append( (pos, self._plateau[pos].getShortClasse())   )
