@@ -2,6 +2,7 @@ from ProjectPiouPiou.FakeClient.MockClient import MockClient
 from ProjectPiouPiou.Models.bo.Artilleur import Artilleur
 from ProjectPiouPiou.Models.bo.Eclaireur import Eclaireur
 from ProjectPiouPiou.Models.bo.Marines import Marines
+import ProjectPiouPiou.Models.bo.config as cg
 
 
 
@@ -38,6 +39,9 @@ continuer = True
 compteur = 0
 while continuer :
     boardState = client.newTurn()
+
+    print("BOARDSATE", (boardState))
+    # print("BOARDSATE", cg.fromListTodic(boardState))
     compteur = compteur + 1
     if compteur < 20 :
         newPos = mar1.seDeplacer()

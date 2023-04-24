@@ -57,7 +57,8 @@ class Client:
     def regarderAutour(self, unitName):
         r = requests.get("http://127.0.0.1:5000/loop/lookAround?team=" + self._name + "&unitName=" + unitName)
         received = json.loads(r.text)
-        return tuple(i for i in received)
+        tuple(i for i in received)
+        #TODO
 
     def deplacer(self, unitName, pos):
         r = requests.get(
@@ -74,3 +75,4 @@ class Client:
     # --------------------------------------
     def posString(self, pos):
         return "&posX=" + str(pos[0]) + "&posY=" + str(pos[1])
+

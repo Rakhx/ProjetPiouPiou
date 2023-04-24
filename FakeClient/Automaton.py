@@ -57,12 +57,12 @@ class Automaton:
         for unite in self._mesUnites :
             param["unitName"] = unite.getName()
             vu = self._server.regarderAutour(param)
-            # Dictionnaire : k : position v:(shortName, pv)
-            if not () in vu :
-                # ( (pos,pos), type )
-                for tuple in vu :
-                    if tuple[1] != "O":
-                        self._posMechants.append(tuple[0])
+            dic = cg.fromListTodic(vu)
+
+            for key in dic :
+                if dic[key] != "O":
+                    if not key in self._posMechants:
+                      self._posMechants.append(key)
 
         # Deplacement des unités
         if not self._posMechants:

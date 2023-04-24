@@ -53,14 +53,14 @@ class MockClient():
         # fait jouer le bot
         self._automate.playTurn()
         boardState = self._server.sumUpSituaiton({"team" : self._name})
-        return boardState
+        return cg.fromListTodic(boardState)
 
     def regarderAutour(self, unitName):
         param = {}
         param["team"] = self._name
         param["unitName"] = unitName
         resultat =  self._server.regarderAutour(param)
-        return resultat
+        return cg.fromListTodic(resultat)
 
     def deplacer(self, unitName, pos):
         param = {}
