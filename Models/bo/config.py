@@ -1,4 +1,4 @@
-tailleTerrainTuple = (10,10)
+tailleTerrainTuple = (20,20)
 
 #Deplacement, pv , degat, vision
 Marines = (2,5,4,2)

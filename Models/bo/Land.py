@@ -36,14 +36,23 @@ class Land():
     def getItems(self):
         return self._items
 
+    def killUnite(self, item):
+        if item in self._items :
+            self._items.remove(item)
+        for pos in self._plateau :
+            if self._plateau[pos] == item:
+                self._plateau.pop(pos)
 
     def getResume(self, teamName):
         resume = []
+        aRetirer = []
         for pos in self._plateau:
             item = self._plateau[pos]
             if item.getTeamName() == teamName:
                 resume.append( (pos, item.getName(), item.getPV()) )
-        return resume
+                if(item.getPV() <= 0) :
+                    aRetirer.append(item)
+        return resume, aRetirer
 
     def moveItem(self, item, position):
         self._plateau[position] = item

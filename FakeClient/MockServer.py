@@ -49,10 +49,7 @@ class MockServer:
             print("equipe " + param["team"] + " prend la priorite")
         representation = self._moteur.displayLand()
 
-        #modifyValue(representation)
-
         return self._moteur.sumupSituation(param["team"])
-
 
     def sumUpSituaiton(self, param):
         if cg.debug :

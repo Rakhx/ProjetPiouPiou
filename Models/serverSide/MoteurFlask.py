@@ -129,7 +129,12 @@ class MoteurFlask():
         self._alrdyLooked = []
 
         resultat = self._land.getResume(teamName)
-        return resultat
+        aRetirer = resultat[1]
+        for item in aRetirer:
+            if cg.debug :
+                print("l'unite ", item.getName(), " est morte, elle est retirée du jeu ")
+            self._land.killUnite(item)
+        return resultat[0]
 
     def displayLand(self):
         if(cg.debug):
