@@ -31,40 +31,13 @@ class Client:
     # ERR_PLACE = Positionnement de l'unité non disponible
     def registerUnit(self, unitType, unitName, pos):
         r = requests.get("http://127.0.0.1:5000/init/register?team=" + self._name + "&type=" + unitType +
-                         "&name=" + unitName + self.__posString(pos))
+                         "&name=" + unitName + self.posString(pos))
         return r.text
 
     # --------------------------------------
     #   Boucle en cours de  game
     # --------------------------------------
-
-    # fonction a appeler dans le while
-    def newTurn(self):
-        self.releasePriority()
-        time.sleep(1)
-        boardState = self.__askPriority()
-        return boardState
-
-    def regarderAutour(self, unitName):
-        r = requests.get("http://127.0.0.1:5000/loop/lookAround?team=" + self._name + "&unitName=" + unitName)
-        received = json.loads(r.text)
-        return tuple(i for i in received)
-
-    def deplacer(self, unitName, pos):
-        r = requests.get(
-            "http://127.0.0.1:5000/loop/move?team=" + self._name + "&unitName=" + unitName + self.__posString(pos))
-        return r.text
-
-    def tirer(self, unitName, pos):
-        r = requests.get(
-            "http://127.0.0.1:5000/loop/shoot?team=" + self._name + "&unitName=" + unitName + self.__posString(pos))
-        return r.text
-
-    # --------------------------------------
-    #   Autres
-    # --------------------------------------
-
-    def __askPriority(self):
+    def askPriority(self):
         r = requests.get("http://127.0.0.1:5000/loop/askPrio?team=" + self._name)
         received = json.loads(r.text)
         test = tuple(i for i in received)
@@ -74,5 +47,32 @@ class Client:
         r = requests.get("http://127.0.0.1:5000/loop/releasePrio")
         return r.text
 
-    def __posString(self, pos):
+    # fonction a appeler dans le while
+    def newTurn(self):
+        self.releasePriority()
+        time.sleep(1)
+        boardState = self.askPriority()
+        return boardState
+
+    def regarderAutour(self, unitName):
+        r = requests.get("http://127.0.0.1:5000/loop/lookAround?team=" + self._name + "&unitName=" + unitName)
+        received = json.loads(r.text)
+        tuple(i for i in received)
+        #TODO
+
+    def deplacer(self, unitName, pos):
+        r = requests.get(
+            "http://127.0.0.1:5000/loop/move?team=" + self._name + "&unitName=" + unitName + self.posString(pos))
+        return r.text
+
+    def tirer(self, unitName, pos):
+        r = requests.get(
+            "http://127.0.0.1:5000/loop/shoot?team=" + self._name + "&unitName=" + unitName + self.posString(pos))
+        return r.text
+
+    # --------------------------------------
+    #   Autres
+    # --------------------------------------
+    def posString(self, pos):
         return "&posX=" + str(pos[0]) + "&posY=" + str(pos[1])
+
