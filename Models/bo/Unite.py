@@ -8,7 +8,7 @@ from typing import Tuple
 
 
 class Unite(Item, ABC):
-    def __init__(self, name, equipe, position, mvt, pv, damage, vision, isDestructible = True):
+    def __init__(self, name, equipe, position, mvt, pv, damage, vision, isDestructible=True):
         Item.__init__(self, name, equipe, position, isDestructible)
         self._mvt = int(mvt);
         self._pv = int(pv);
@@ -16,9 +16,10 @@ class Unite(Item, ABC):
         self._vision = int(vision);
         self._shooted = False
         self._moved = False
+        self._flag = None
 
     # On veut de placer l'unité. On suppose les controles déjà fait précédemment
-    def setPosition(self, coordonneesDestination : Tuple[float, float]):
+    def setPosition(self, coordonneesDestination: Tuple[float, float]):
         self._position = coordonneesDestination
 
     def getPosition(self):
@@ -30,20 +31,8 @@ class Unite(Item, ABC):
     def getMvt(self):
         return self._mvt
 
-    #chaque unité va avoir une maniere différente de se déplacer
-    def seDeplacer(self):
-        mvtx = random.randint(0, self._mvt)
-        mvty = self._mvt - mvtx
-        if random.uniform(0,1) > 0.5 :
-            mvtx = mvtx * -1
-
-        if random.uniform(0,1) > 0.5 :
-            mvty = mvty * -1
-
-        newPosi = (self._position[0]+mvtx, self._position[1]+mvty)
-        return newPosi
-        # if(land.isItemIsAtPos(newPosi)):
-        #     self.setPosition(newPosi)
+    def isBearerOfFlag(self):
+        return not self._flag is None
 
     # Fonction qui vérifie la possibilité pour une unité d'atteindre une position
     # Renvoi : OK si déplacement possible
@@ -58,6 +47,7 @@ class Unite(Item, ABC):
 
     def getPV(self) -> int:
         return self._pv
+
     def getDegat(self) -> int:
         return self._damage
 
@@ -66,12 +56,20 @@ class Unite(Item, ABC):
             self._pv = self._pv - degat
         return self._pv
 
+    def pickUpFlag(self, aFlag):
+        self._flag = aFlag
+        aFlag.bePickUp(self)
+
+    def dropFlag(self):
+        self._flag.beDrop()
+        self._flag = None
+
     def moveToward(self, pos):
         diffX = self.getPosition()[0] - pos[0]
         diffY = self.getPosition()[1] - pos[1]
-        newPosX = self.getPosition()[0] + self.sign(diffX) * 1
+        newPosX = self.getPosition()[0] + Unite.sign(diffX) * 1
         newPosY = self.getPosition()[1] + self.sign(diffY) * 1
-        return newPosX,newPosY
+        return newPosX, newPosY
 
     def moveRandomlyToward(self, pos):
         diffX = pos[0] - self.getPosition()[0]
@@ -79,20 +77,34 @@ class Unite(Item, ABC):
         newPosX = self.getPosition()[0] + self.sign(diffX) * 1
         newPosY = self.getPosition()[1] + self.sign(diffY) * 1
         # Ajout d'un bruit random
-        if random.randint(0,10) > 8 :
+        if random.randint(0, 10) > 8:
             # si pair, horizontal
-            direc = random.randint(1,4)
+            direc = random.randint(1, 4)
             if direc % 2 == 0:
                 newPosY += direc - 3
             # vertical
-            else :
+            else:
                 newPosX += direc - 2
 
         return newPosX, newPosY
 
-    def sign(self, value):
-        if value > 0 :
+    # chaque unité va avoir une maniere différente de se déplacer
+    def seDeplacer(self):
+        mvtx = random.randint(0, self._mvt)
+        mvty = self._mvt - mvtx
+        if random.uniform(0, 1) > 0.5:
+            mvtx = mvtx * -1
+
+        if random.uniform(0, 1) > 0.5:
+            mvty = mvty * -1
+
+        newPosi = (self._position[0] + mvtx, self._position[1] + mvty)
+        return newPosi
+
+    @staticmethod
+    def sign(value):
+        if value > 0:
             return 1
-        elif value < 0 :
+        elif value < 0:
             return -1
         return 0

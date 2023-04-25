@@ -1,14 +1,11 @@
-import random
+import traceback
 
+import ProjectPiouPiou.Models.bo.config as cg
 from ProjectPiouPiou.Models.bo.Base import Base
-from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Land import Land
-from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
 from ProjectPiouPiou.Models.serverSide.Team import Team
 from ProjectPiouPiou.Presenter.PresenterConsole import PresenterConsole
 from ProjectPiouPiou.View.ConsoleView import ConsoleView
-import ProjectPiouPiou.Models.bo.config as cg
-import traceback
 
 
 class MoteurFlask():
@@ -46,6 +43,7 @@ class MoteurFlask():
         self._alrdyMov = []
         self._alrdyShoot = []
         self._alrdyLooked = []
+
 
     # ---------------------
     # Fonction interne a la classe
@@ -132,7 +130,7 @@ class MoteurFlask():
         aRetirer = resultat[1]
         for item in aRetirer:
             if cg.debug :
-                print("l'unite ", item.getName(), " est morte, elle est retirée du jeu ")
+                print("l'unite ", item.getName(), " est morte, elle est retirée du jeu")
             self._land.killUnite(item)
         return resultat[0]
 
@@ -213,6 +211,8 @@ class MoteurFlask():
             return "[MoteurFlask.deplacementUnite()] autre erreur " + repr(e)
 
         self._land.moveItem(unite, position)
+        if self._land.isFlagAroundAndFree(position) :
+            unite.pickUpFlag(self._land.getFlag())
         return "OK"
 
     # Tire sur la case selectionnée, dommage fait si cible
@@ -249,6 +249,9 @@ class MoteurFlask():
             degat = unite.getDegat()
             pvRestant = cible.takeShoot(degat)
 
+            #l'unité sera retiré de la partie au début du prochain tour
+            #if pvRestant <= 0 :
+
             if cg.debug:
                 print("unite ", unite.getName(), " a tiré sur ", cible.getName(), "il lui reste ",
                       pvRestant)
@@ -261,6 +264,7 @@ class MoteurFlask():
             print("[MoteurFlask.deplacementUnite()] autre erreur: ", repr(e))
             return "[MoteurFlask.deplacementUnite()] autre erreur " + repr(e)
 
-        self._land.moveItem(unite, position)
+
+
         return "OK"
 
