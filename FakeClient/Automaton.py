@@ -46,7 +46,7 @@ class Automaton:
         param = {"team": self._name, "type": "Eclaireur", "name": "botEcl2", "posX": self._startPosition[0] + 1,
                  "posY": self._startPosition[1] - 1}
         self._server.registerUnit(param)
-        eclai2 = Eclaireur("botEcl2", "létrofor", (posX + 1, posY - 1), stats[0], stats[1], stats[2], stats[3])
+        eclai2 = Eclaireur("botEcl2", self._name, (posX + 1, posY - 1), stats[0], stats[1], stats[2], stats[3])
         self._mesUnites.append(eclai2)
 
     def playTurn(self):
@@ -60,7 +60,7 @@ class Automaton:
             dic = cg.fromListTodic(vu)
 
             for key in dic :
-                if dic[key] != "O":
+                if "O" not in dic[key] and "F" not in dic[key] :
                     if not key in self._posMechants:
                       self._posMechants.append(key)
 
@@ -71,13 +71,20 @@ class Automaton:
             target = self._posMechants[0]
 
         for unite in self._mesUnites:
-            posVoulu = unite.moveRandomlyToward(target)
+            if unite.isBearerOfFlag():
+                posVoulu = unite.moveRandomlyToward(self._startPosition)
+            else:
+                posVoulu = unite.moveRandomlyToward(target)
+
             param["unitName"] = unite.getName()
             param["posX"] = posVoulu[0]
             param["posY"] = posVoulu[1]
             resultat = self._server.deplacementUnite(param)
             if(resultat == "OK"):
                 unite.setPosition(posVoulu)
+            if(resultat == "OK_FLAG"):
+                unite.setPosition(posVoulu)
+                unite._flag = "Oui"
 
         # Tire des unites
         tirOk = True

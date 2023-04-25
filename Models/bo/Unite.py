@@ -21,6 +21,9 @@ class Unite(Item, ABC):
     # On veut de placer l'unité. On suppose les controles déjà fait précédemment
     def setPosition(self, coordonneesDestination: Tuple[float, float]):
         self._position = coordonneesDestination
+        if self._flag is not None:
+            self._flag.setPosition(coordonneesDestination)
+            print("Flag se déplace en ", coordonneesDestination)
 
     def getPosition(self):
         return self._position
@@ -32,7 +35,7 @@ class Unite(Item, ABC):
         return self._mvt
 
     def isBearerOfFlag(self):
-        return not self._flag is None
+        return self._flag is not None
 
     # Fonction qui vérifie la possibilité pour une unité d'atteindre une position
     # Renvoi : OK si déplacement possible

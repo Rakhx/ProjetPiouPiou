@@ -32,7 +32,10 @@ class Land():
         return self._flag
 
     def isFlagAroundAndFree(self, pos):
-        if Land.isAtSquareRange(pos, self._flag.getPosition(), 1) and not  self._flag.isPicked:
+        # square or circle? isAtSquareRange(pos, self._flag.getPosition(), 1)
+
+
+        if Land.isAtSquareRange(pos, self._flag.getPosition(), 1) and not self._flag.isPicked():
             return True
         return False
 
@@ -48,7 +51,8 @@ class Land():
         return self._items
 
     def killUnite(self, item):
-        if isinstance(item, Unite) and item.isBearerOfFlag():
+        porteur = isinstance(item, Unite) and item.isBearerOfFlag()
+        if porteur :
             item.dropFlag()
 
         if item in self._items :
@@ -56,6 +60,11 @@ class Land():
         for pos in self._plateau :
             if self._plateau[pos] == item:
                 self._plateau.pop(pos)
+
+        if porteur :
+            self.makeFlagReappear(pos)
+
+
 
     def getResume(self, teamName):
         resume = []
@@ -112,7 +121,7 @@ class Land():
         # Vérifie que la case touche, meme en diagonal, une autre case
     @staticmethod
     def isAtSquareRange(posDepart, posArrivee, range):
-        if abs(posDepart[0]-posArrivee[0]<=range) and abs(posDepart[1]-posArrivee[1]<=range ):
+        if abs(posDepart[0]-posArrivee[0])<=range and abs(posDepart[1]-posArrivee[1])<=range :
             return True
         return False
 
@@ -195,7 +204,7 @@ class Land():
     def generateFlag(self):
         pos = (self._dimension[0]//2, self._dimension[1]//2)
         self.clearObstacleAroundPosition(pos)
-        flag = Flag("Flag","Neutre", pos, 0, 0, 0, False)
+        flag = Flag("Flag","Neutre", pos, False)
         self.addItem(flag)
         self._flag = flag
 
@@ -212,3 +221,12 @@ class Land():
         for posUnit in self._plateau:
             unit = self._plateau[posUnit]
             print ("pos ",posUnit, " unit ", unit.getShortClasse(), "team ", unit.getTeamName())
+
+    def makeFlagDisapear(self):
+        pos = self._flag.getPosition()
+        self._flag.setPosition((-1,-1))
+        del self._plateau[pos]
+
+    def makeFlagReappear(self,pos):
+        self._flag.setPosition(pos)
+        self._plateau[pos] = self._flag

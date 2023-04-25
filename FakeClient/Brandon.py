@@ -39,11 +39,10 @@ continuer = True
 compteur = 0
 while continuer :
     boardState = client.newTurn()
-
-    print("BOARDSATE", (boardState))
-    # print("BOARDSATE", cg.fromListTodic(boardState))
+    if cg.fullDetail :
+        print("BOARDSATE", (boardState))
     compteur = compteur + 1
-    if compteur < 20 :
+    if compteur < 30 :
         newPos = mar1.seDeplacer()
         res = client.deplacer(mar1.getName(), newPos)
         print(res)

@@ -135,7 +135,7 @@ class MoteurFlask():
         return resultat[0]
 
     def displayLand(self):
-        if(cg.debug):
+        if(cg.fullDetail):
             self._land.debugSumUp()
         return self._presenter.parseLand(self._land)
 
@@ -213,6 +213,8 @@ class MoteurFlask():
         self._land.moveItem(unite, position)
         if self._land.isFlagAroundAndFree(position) :
             unite.pickUpFlag(self._land.getFlag())
+            self._land.makeFlagDisapear()
+            return "OK_FLAG"
         return "OK"
 
     # Tire sur la case selectionnée, dommage fait si cible
