@@ -44,6 +44,9 @@ class Item(ABC):
     def getPV(self) -> int:
         pass
 
+    # est redéfini dans les unités, sert ici pour Flag & obstable
+    def takeShoot(self, degat):
+        return 1
 
     def getTeamName(self):
         return self._camp

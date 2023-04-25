@@ -21,11 +21,9 @@ class MockClient():
         # AJout du bot
         self._automate = Automaton(self._server)
 
-
     # --------------------------------------
     #   Initialisation de début de game
     # --------------------------------------
-
 
     # Enregistre une unité sur le serveur. Le serveur renvoi un message
     # OK = unité positionnée
@@ -41,7 +39,6 @@ class MockClient():
         param["posX"] = pos[0]
         param["posY"] = pos[1]
         return self._server.registerUnit(param)
-
 
     # --------------------------------------
     #   Boucle en cours de  game

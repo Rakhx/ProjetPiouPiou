@@ -7,9 +7,12 @@ from typing import List
 from ProjectPiouPiou.Models.bo.Flag import Flag
 from ProjectPiouPiou.Models.bo.Item import Item
 from ProjectPiouPiou.Models.bo.Obstacle import Obstacle
+from ProjectPiouPiou.Models.bo.Unite import Unite
+
 
 class Land():
     def __init__(self, dimension : Tuple[float, float] = (), items : List[Item] = [] ):
+        self._flag = None
         # Tuple de hauteur par largeur
         self._dimension = dimension
         # Liste des items contenu sur la map
@@ -25,6 +28,17 @@ class Land():
     def getPlateau(self):
         return self._plateau
 
+    def getFlag(self):
+        return self._flag
+
+    def isFlagAroundAndFree(self, pos):
+        # square or circle? isAtSquareRange(pos, self._flag.getPosition(), 1)
+
+
+        if Land.isAtSquareRange(pos, self._flag.getPosition(), 1) and not self._flag.isPicked():
+            return True
+        return False
+
     def addItem(self, item : Item ):
         self._items.append(item)
         self._plateau[item.getPosition()] = item
@@ -37,11 +51,20 @@ class Land():
         return self._items
 
     def killUnite(self, item):
+        porteur = isinstance(item, Unite) and item.isBearerOfFlag()
+        if porteur :
+            item.dropFlag()
+
         if item in self._items :
             self._items.remove(item)
         for pos in self._plateau :
             if self._plateau[pos] == item:
                 self._plateau.pop(pos)
+
+        if porteur :
+            self.makeFlagReappear(pos)
+
+
 
     def getResume(self, teamName):
         resume = []
@@ -56,15 +79,13 @@ class Land():
 
     def moveItem(self, item, position):
         self._plateau[position] = item
-        if item.getPosition() == (5, 5):
-            print("NIAH")
         try :
             del self._plateau[item.getPosition()]
         except KeyError as k :
             print ("KEYERROR: ", k)
         item.setPosition(position)
 
-    # Renvoi l'objet a la position donnée, ou False si case disponible
+    # Renvoi l'objet à la position donnée, ou False si case disponible
     def getItemOrFalseAtPosition(self, position : Tuple[float, float]):
         if position in self._plateau:
             return self._plateau[position]
@@ -89,12 +110,20 @@ class Land():
         return positionAtRange
 
     # Vérifie que le centre de la case d'arrivée est dans le cercle depuis la position de départ
-    def isAtCircleRange(self, posDepart, posArrivee, range):
+    @staticmethod
+    def isAtCircleRange(posDepart, posArrivee, range):
         centreDepart = posDepart + (0.5, 0.5)
         centreArrivee = posArrivee + (0.5, 0.5)
         # si la distance entre les deux centres est inférieur au rayon
         distance = math.sqrt( math.pow(centreDepart[0]-centreArrivee[0],2) + math.pow(centreDepart[1]-centreArrivee[1],2) )
         return distance <= range
+
+        # Vérifie que la case touche, meme en diagonal, une autre case
+    @staticmethod
+    def isAtSquareRange(posDepart, posArrivee, range):
+        if abs(posDepart[0]-posArrivee[0])<=range and abs(posDepart[1]-posArrivee[1])<=range :
+            return True
+        return False
 
     # Une unité regarde autour d'elle
     def lookAround(self, position, portee):
@@ -175,8 +204,9 @@ class Land():
     def generateFlag(self):
         pos = (self._dimension[0]//2, self._dimension[1]//2)
         self.clearObstacleAroundPosition(pos)
-        flag = Flag("Flag","Neutre", pos, 0, 0, 0, False)
+        flag = Flag("Flag","Neutre", pos, False)
         self.addItem(flag)
+        self._flag = flag
 
     # Etabli un périmètre autour d'une case pour clean. ( drapeau et départ de team )
     def clearObstacleAroundPosition(self, position):
@@ -191,3 +221,12 @@ class Land():
         for posUnit in self._plateau:
             unit = self._plateau[posUnit]
             print ("pos ",posUnit, " unit ", unit.getShortClasse(), "team ", unit.getTeamName())
+
+    def makeFlagDisapear(self):
+        pos = self._flag.getPosition()
+        self._flag.setPosition((-1,-1))
+        del self._plateau[pos]
+
+    def makeFlagReappear(self,pos):
+        self._flag.setPosition(pos)
+        self._plateau[pos] = self._flag

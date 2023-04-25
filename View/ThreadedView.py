@@ -5,6 +5,7 @@ import time
 # Vue qui va être utilisée dans un thread à part pour l'affichage côté serveur
 class ThreadedView():
     def __init__(self):
+        print("Call once")
         self.root = Tk()
         self._canvas2 = Canvas(self.root, width=200, height=500, bg="#FFFFFF")
         self._canvas2.grid(row = 0, column = 0)
