@@ -23,8 +23,8 @@ class PresenterConsole(AbstractPresenter):
         terrainAscii = ""
         posGetItem = False
         dimension = land.getDimension()
-        for x in range(int(dimension[0])):
-            for y in range(int(dimension[1])):
+        for x in range(int(dimension[0])+1):
+            for y in range(int(dimension[1])+1):
 
                 for item in land.getItems():
                     if (item.isAtPosition((x, y))):

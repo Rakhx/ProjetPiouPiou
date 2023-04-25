@@ -3,7 +3,6 @@ import random
 from abc import ABC
 
 from ProjectPiouPiou.Models.bo.Item import Item
-from ProjectPiouPiou.Models.bo.Land import Land
 
 from typing import Tuple
 
@@ -11,10 +10,10 @@ from typing import Tuple
 class Unite(Item, ABC):
     def __init__(self, name, equipe, position, mvt, pv, damage, vision, isDestructible = True):
         Item.__init__(self, name, equipe, position, isDestructible)
-        self._mvt = mvt;
-        self._pv = pv;
-        self._damage = damage;
-        self._vision = vision;
+        self._mvt = int(mvt);
+        self._pv = int(pv);
+        self._damage = int(damage);
+        self._vision = int(vision);
         self._shooted = False
         self._moved = False
 
@@ -25,12 +24,15 @@ class Unite(Item, ABC):
     def getPosition(self):
         return self._position
 
-    def getRange(self):
+    def getVision(self):
         return self._vision
 
+    def getMvt(self):
+        return self._mvt
+
     #chaque unité va avoir une maniere différente de se déplacer
-    def seDeplacer(self, land : Land):
-        mvtx = random.uniform(0, self._mvt)
+    def seDeplacer(self):
+        mvtx = random.randint(0, self._mvt)
         mvty = self._mvt - mvtx
         if random.uniform(0,1) > 0.5 :
             mvtx = mvtx * -1
@@ -39,9 +41,9 @@ class Unite(Item, ABC):
             mvty = mvty * -1
 
         newPosi = (self._position[0]+mvtx, self._position[1]+mvty)
-        if(land.isItemIsAtPos(newPosi)):
-
-            self.setPosition(newPosi)
+        return newPosi
+        # if(land.isItemIsAtPos(newPosi)):
+        #     self.setPosition(newPosi)
 
     # Fonction qui vérifie la possibilité pour une unité d'atteindre une position
     # Renvoi : OK si déplacement possible
@@ -71,6 +73,22 @@ class Unite(Item, ABC):
         newPosY = self.getPosition()[1] + self.sign(diffY) * 1
         return newPosX,newPosY
 
+    def moveRandomlyToward(self, pos):
+        diffX = pos[0] - self.getPosition()[0]
+        diffY = pos[1] - self.getPosition()[1]
+        newPosX = self.getPosition()[0] + self.sign(diffX) * 1
+        newPosY = self.getPosition()[1] + self.sign(diffY) * 1
+        # Ajout d'un bruit random
+        if random.randint(0,10) > 8 :
+            # si pair, horizontal
+            direc = random.randint(1,4)
+            if direc % 2 == 0:
+                newPosY += direc - 3
+            # vertical
+            else :
+                newPosX += direc - 2
+
+        return newPosX, newPosY
 
     def sign(self, value):
         if value > 0 :

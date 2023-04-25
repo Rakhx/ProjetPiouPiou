@@ -23,13 +23,16 @@ class MockServer:
 
         return message
 
+    def getUniteDispos(self):
+        return self._moteur.getStartUnite()
+
     # --------------------------------------
     #   Boucle en cours de  game
     # --------------------------------------
 
     # regarde autour
     def regarderAutour(self, param):
-        return [tuple(str(x) for x in self._moteur.regardeAutour(param["team"], param["unitName"]))]
+        return self._moteur.regardeAutour(param["team"], param["unitName"])
 
     def deplacementUnite(self, param):
         return self._moteur.deplacementUnite(param["team"], param["unitName"], (int(param["posX"]), int(param["posY"])))
@@ -46,18 +49,11 @@ class MockServer:
             print("equipe " + param["team"] + " prend la priorite")
         representation = self._moteur.displayLand()
 
-        #modifyValue(representation)
-
         return self._moteur.sumupSituation(param["team"])
 
-
     def sumUpSituaiton(self, param):
-        teamWithPrio = param["team"]
-        # if cg.debug:
-        #     print("equipe " + param["team"] + " prend la priorite")
-        # representation = self._moteur.displayLand()
-        #
-        # # modifyValue(representation)
+        if cg.debug :
+            self._moteur.displayLand()
 
         return self._moteur.sumupSituation(param["team"])
 

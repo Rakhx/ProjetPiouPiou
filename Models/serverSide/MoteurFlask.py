@@ -41,6 +41,12 @@ class MoteurFlask():
         for pos in self._positionPossibleBase:
             self._land.clearObstacleAroundPosition(pos)
 
+        # Concernant la boucle de jeu
+        # Liste des unites ayant déjà pendant ce tour tiré, bougé, etc
+        self._alrdyMov = []
+        self._alrdyShoot = []
+        self._alrdyLooked = []
+
     # ---------------------
     # Fonction interne a la classe
     # ---------------------
@@ -118,13 +124,25 @@ class MoteurFlask():
     # Fait un résumé des unités disponibles sur la map pour une équipe, pv restant et position. Le
     # retour est sous la forme key: unite v : (position, pv), position étant (x,y)
     def sumupSituation(self, teamName):
+        self._alrdyMov = []
+        self._alrdyShoot = []
+        self._alrdyLooked = []
+
         resultat = self._land.getResume(teamName)
-        return resultat
+        aRetirer = resultat[1]
+        for item in aRetirer:
+            if cg.debug :
+                print("l'unite ", item.getName(), " est morte, elle est retirée du jeu ")
+            self._land.killUnite(item)
+        return resultat[0]
 
     def displayLand(self):
+        if(cg.debug):
+            self._land.debugSumUp()
         return self._presenter.parseLand(self._land)
 
     # Une unité regarde autour d'elle
+    # retour k:position v: unitTYpe
     def regardeAutour(self, teamName, unitName):
         try :
             team = self._equipe[teamName]
@@ -134,20 +152,35 @@ class MoteurFlask():
                 print("[MoteurFlask.regardeAutour({})] Clef n'existe pas".format(unitName))
             return "[MoteurFlask.regardeAutour({})] Clef n'existe pas".format(unitName)
 
-        if cg.debug:
-            print(self._land.lookAround(unite.getPosition(), unite.getRange()))
+        if unite in self._alrdyLooked:
+            return "ALRDY_LOOK"
+        self._alrdyLooked.append(unite)
 
-        return self._land.lookAround(unite.getPosition(), unite.getRange())
+        retour = self._land.lookAround(unite.getPosition(), unite.getVision())
+        if cg.debug:
+            print(retour)
+
+        return retour
 
     # Retour
     # NO_CASE : case déjà prise
     # NO_REACH : l'unité n'a pas la portée
     # NO_PASS : Pas de chemin disponible
+    # ALRDY_MOVE : l'unité s'est déjà déplacée ce tour ci
     def deplacementUnite(self, teamName, unitName, position):
 
         try :
             team = self._equipe[teamName]
             unite = team.getUnitByName(unitName)
+
+            # On vérifie que l'unité ne s'est pas encore déplacée à ce tour
+            if unite in self._alrdyMov:
+                return "ALRDY_MOV"
+            self._alrdyMov.append(unite)
+
+            # Verification que le déplacement se fait dans la carte
+            if position[0] < 0 or position[0] > cg.tailleTerrainTuple[0] or position[1] < 0 or position[1] > cg.tailleTerrainTuple[1]:
+                return "NO_SIZELAND"
 
             # Verification que la case est disponible
             if self._land.getItemOrFalseAtPosition(position):
@@ -156,10 +189,10 @@ class MoteurFlask():
             # Verification que l'unité peut atteindre la case
             posUnit = unite.getPosition()
             # on regarde toutes les cases qui pourraient faire l'affaire autour de posUnit
-            casesMaybe = self._land.getCasesAtRange(posUnit, unite.getRange())
+            casesMaybe = self._land.getCasesAtRange(posUnit, unite.getMvt())
             # On vérifie récursivement quelles sont les cases accessibles
             posNearFine = []
-            self._land.exploRecu(posNearFine, casesMaybe,posUnit, unite.getRange())
+            self._land.exploRecu(posNearFine, casesMaybe, posUnit, unite.getMvt())
 
             # on enleve de ces cases celles qui contiennent des unités alliées ou ennemies
             posOk = self._land.cleanCase(posNearFine)
@@ -195,8 +228,13 @@ class MoteurFlask():
             unite = team.getUnitByName(unitName)
             posUnit = unite.getPosition()
 
+            # On vérifie que l'unité n'a pas encore tiré
+            if unite in self._alrdyShoot:
+                return "ALRDY_SHOOT"
+            self._alrdyShoot.append(unite)
+
             # on vérifie que l'unité a la portée pour tirer
-            casesMaybe = self._land.getCasesAtRange(posUnit, unite.getRange())
+            casesMaybe = self._land.getCasesAtRange(posUnit, unite.getVision())
             if not position in casesMaybe :
                 return "NO_REACH"
 
